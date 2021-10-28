@@ -21,9 +21,9 @@ import javax.persistence.Id;
     @NoArgsConstructor
 
     public class ExampleEntity {
-        //создаем ключ
+        //create a key
         @Id
-        // алгоритм, по которому будет генерироваться айдишник
+        // Algorithm for creating id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private long id;
 
