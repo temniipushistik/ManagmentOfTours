@@ -7,6 +7,8 @@ public interface Service {
     EntityTour addClient(CreateClientRequest client);
     void delete(String email);
     EntityTour getClient(String username);
+    void deleteAll();
+
 
 
 }

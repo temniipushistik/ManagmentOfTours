@@ -21,9 +21,14 @@ public class ServiceImplementation implements com.example.tourmanagertool.servic
     }
 
     @Override
-    public void delete(String  email) {
+    public void delete(String email) {
 
         repository.deleteByEmail(email);
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     @Override

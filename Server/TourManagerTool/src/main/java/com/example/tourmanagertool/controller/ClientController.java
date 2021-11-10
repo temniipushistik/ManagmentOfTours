@@ -18,7 +18,8 @@ public class ClientController {
     @Autowired
     Service service;
 
-
+    //фронт отправляет запрос по ссылке с create. еще надо добавить в этом классе delete change get01(возвращает по почте клиента)
+    // , get02 - возвращает весь список клиентов
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> createClient(@RequestBody CreateClientRequest request){
         // Демонстрация requestDTO
