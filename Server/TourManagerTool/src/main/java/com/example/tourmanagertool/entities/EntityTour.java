@@ -11,9 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
-    // у него приватные поля всегда
-//entities - структура базы данных
-//лобок создает все гетеры сетеры, конструкторы с параметрами и без
+
+//entities are structure of database
+//lombok creates getters, setters, constructors with all args and without args below
 
     @Getter
     @Setter
@@ -22,16 +22,17 @@ import javax.persistence.Id;
     @javax.persistence.Entity
 
     public class EntityTour {
-        //создаем ключ
+        //creat a key
         @Id
-        // алгоритм, по которому будет генерироваться айдишник
         @GeneratedValue(strategy = GenerationType.AUTO)
-        private long id;
-
+        int id;
         private String username;
         private String email;
         private String phoneNumber;
         //how does user find the company:
         private String sourceOfTraffic;
 
+
+
     }
+
