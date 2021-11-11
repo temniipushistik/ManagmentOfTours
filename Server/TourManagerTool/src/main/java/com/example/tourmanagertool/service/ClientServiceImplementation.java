@@ -1,6 +1,5 @@
 package com.example.tourmanagertool.service;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 import com.example.tourmanagertool.DTO.request.CreateClientRequest;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ServiceImplementation implements com.example.tourmanagertool.service.Service {
+public class ClientServiceImplementation implements ClientService {
     @Autowired
     Repository repository;
 

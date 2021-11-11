@@ -1,5 +1,4 @@
 package com.example.tourmanagertool.DTO.request;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ChangeClientRequest {
-    private String userName;
+public class ObtainClientRequest {
+//получаем желаемого клиента по почте
     private String email;
-    private String phoneNumber;
-
-
 }
