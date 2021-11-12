@@ -1,6 +1,6 @@
 package com.example.tourmanagertool.controller;
 
-import com.example.tourmanagertool.DTO.request.CreateClientRequest;
+import com.example.tourmanagertool.DTO.request.*;
 import com.example.tourmanagertool.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +42,37 @@ public class ClientController {
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
     }
+
+    @PostMapping("/change")
+
+    public ResponseEntity<HttpStatus> changeClient(@RequestBody ChangeClientRequest request) {
+        //template
+        return null;
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<HttpStatus> deleteClient(@RequestBody DeleteClientRequest request) {
+        //template
+        return null;
+
+    }
+
+    @PostMapping("/obtain")
+    public ResponseEntity<HttpStatus> obtainClient(@RequestBody ObtainClientRequest request) {
+        //template
+        return null;
+
+    }
+
+    @PostMapping("/obtainAll")
+    public ResponseEntity<HttpStatus> obtainAllClients(@RequestBody ObtainAllClientsRequest request) {
+        //template
+        return null;
+
+    }
+
+
+
 
 
 
