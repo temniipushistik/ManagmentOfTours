@@ -1,13 +1,19 @@
 package com.example.tourmanagertool.service;
 
+import com.example.tourmanagertool.DTO.request.ChangeClientRequest;
 import com.example.tourmanagertool.DTO.request.CreateClientRequest;
+import com.example.tourmanagertool.DTO.request.ObtainClientRequest;
+import com.example.tourmanagertool.DTO.response.UniqueResponse;
 import com.example.tourmanagertool.entities.EntityTour;
 
 public interface ClientService {
-    EntityTour addClient(CreateClientRequest client);
+    UniqueResponse createClient(CreateClientRequest request);
+    UniqueResponse changeClient(ChangeClientRequest request);
     void delete(String email);
-    EntityTour getClient(String username);
-    void deleteAll();
+    UniqueResponse obtainClient(ObtainClientRequest request);
+    UniqueResponse obtainAllClients();
+
+
 
 
 
