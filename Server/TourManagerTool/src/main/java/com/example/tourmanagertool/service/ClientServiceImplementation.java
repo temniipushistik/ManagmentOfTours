@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.tourmanagertool.DTO.request.ChangeClientRequest;
 import com.example.tourmanagertool.DTO.request.CreateClientRequest;
+import com.example.tourmanagertool.DTO.request.DeleteClientRequest;
 import com.example.tourmanagertool.DTO.request.ObtainClientRequest;
 import com.example.tourmanagertool.DTO.response.UniqueResponse;
 import com.example.tourmanagertool.entities.EntityTour;
@@ -27,8 +28,8 @@ public class ClientServiceImplementation implements ClientService {
     }
 
     @Override
-    public void delete(String email) {
-
+    public UniqueResponse deleteClient(DeleteClientRequest request) {
+        return null;
     }
 
     @Override
