@@ -6,9 +6,11 @@ import com.example.tourmanagertool.DTO.request.ChangeClientRequest;
 import com.example.tourmanagertool.DTO.request.CreateClientRequest;
 import com.example.tourmanagertool.DTO.request.DeleteClientRequest;
 import com.example.tourmanagertool.DTO.request.ObtainClientRequest;
+import com.example.tourmanagertool.DTO.response.CreateClientResponse;
 import com.example.tourmanagertool.DTO.response.UniqueResponse;
 import com.example.tourmanagertool.entities.EntityTour;
 import com.example.tourmanagertool.repository.Repository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,34 @@ import org.springframework.stereotype.Service;
 public class ClientServiceImplementation implements ClientService {
     @Autowired
     Repository repository;
+    @Autowired
+    ModelMapper modelMapper;
 
     @Override
     public UniqueResponse createClient(CreateClientRequest request) {
-        return null;
+        UniqueResponse response;
+        //берем репозиторий и ищем почту по нему
+        //list используем т.к. репозиторий возвращает лист
+        List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
+        if(resultSearchByEmail.size()!=0){
+            response = new UniqueResponse("Клиент с такой почтой уже существует",null);
+        }else{//второй аргумент - тип данных в который надо перевести, первый аргумент - из чего перевести
+            EntityTour modelToSaveFromDTO = modelMapper.map(request,EntityTour.class);
+            //метод saveAndFlush - относится к jpa (часть спринга) и в случае экспешина он выдаст ошибку
+            EntityTour result = repository.saveAndFlush(modelToSaveFromDTO);//-сохраняем в БД
+            if (result!=null  ){
+
+                //конвертируем обратно из ентите в ДТО:
+            CreateClientResponse responseDTOFromEntity = modelMapper.map(result,CreateClientResponse.class);
+                //отправляем это на фронт
+            response = new UniqueResponse("Всё успешно добавлено в БД",responseDTOFromEntity);
+            }else{//null - контакт с БД рухнул
+                response = new UniqueResponse("Что-то не так на стороне БД",null);
+            }
+        }
+
+
+        return response;
     }
 
     @Override

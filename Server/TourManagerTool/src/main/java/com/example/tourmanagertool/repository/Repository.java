@@ -10,3 +10,5 @@ public interface Repository extends JpaRepository<EntityTour,Integer> {
     void deleteByEmail(String email);
 
 }
+
+
