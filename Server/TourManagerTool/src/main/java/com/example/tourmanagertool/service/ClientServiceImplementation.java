@@ -8,6 +8,7 @@ import com.example.tourmanagertool.DTO.request.DeleteClientRequest;
 import com.example.tourmanagertool.DTO.request.ObtainClientRequest;
 import com.example.tourmanagertool.DTO.response.ChangeClientResponse;
 import com.example.tourmanagertool.DTO.response.CreateClientResponse;
+import com.example.tourmanagertool.DTO.response.ObtainClientResponse;
 import com.example.tourmanagertool.DTO.response.UniqueResponse;
 import com.example.tourmanagertool.entities.EntityTour;
 import com.example.tourmanagertool.repository.Repository;
@@ -110,7 +111,21 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public UniqueResponse obtainClient(ObtainClientRequest request) {
-        return null;
+        UniqueResponse response;
+
+        List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
+        if (resultSearchByEmail.size() == 0) {
+            response = new UniqueResponse("Клиента с такой почтой не существует", null);}
+        else{
+            EntityTour requestedClient = resultSearchByEmail.get(0);
+            ObtainClientResponse obtainDTOFromEntity = modelMapper.map(requestedClient, ObtainClientResponse.class);
+            //отправляем это на фронт
+            response = new UniqueResponse("Информация о запрошенном пользователе: ",obtainDTOFromEntity);
+
+
+        }
+
+        return response;
     }
 
     @Override
