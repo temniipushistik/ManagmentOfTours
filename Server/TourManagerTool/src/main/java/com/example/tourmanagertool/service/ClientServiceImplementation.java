@@ -34,7 +34,7 @@ public class ClientServiceImplementation implements ClientService {
             EntityTour modelToSaveFromDTO = modelMapper.map(request,EntityTour.class);
             //метод saveAndFlush - относится к jpa (часть спринга) и в случае экспешина он выдаст ошибку
             EntityTour result = repository.saveAndFlush(modelToSaveFromDTO);//-сохраняем в БД
-            if (result!=null  ){
+            if (result!=null ){
 
 
                 //конвертируем обратно из ентите в ДТО:
@@ -53,13 +53,20 @@ public class ClientServiceImplementation implements ClientService {
     @Override
     public UniqueResponse changeClient(ChangeClientRequest request) {
         UniqueResponse response;
-
+        //дял упрощения  запрос изменения клиента используется в одно действие -
+        // т.е. можно менять только телефон и имя
         List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
         if (resultSearchByEmail.size() == 0) {
             response = new UniqueResponse("Клиент с такой почтой не существует", null);}
             else{
-                EntityTour modelToChangeFromDTO = modelMapper.map(request,EntityTour.class);
-                EntityTour result = repository.saveAndFlush(modelToChangeFromDTO);//-сохраняем в БД???
+            //получаем объект с указанной почтой
+
+                EntityTour clientForChanging = resultSearchByEmail.get(0);
+                clientForChanging.setPhoneNumber(request.getPhoneNumber());
+                clientForChanging.setUsername(request.getUserName());
+                EntityTour result = repository.save(clientForChanging);
+
+
                 if (result!=null  ){
 
                     //конвертируем обратно из ентите в ДТО:
