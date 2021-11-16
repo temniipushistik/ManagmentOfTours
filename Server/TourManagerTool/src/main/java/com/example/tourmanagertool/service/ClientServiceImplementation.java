@@ -6,10 +6,7 @@ import com.example.tourmanagertool.DTO.request.ChangeClientRequest;
 import com.example.tourmanagertool.DTO.request.CreateClientRequest;
 import com.example.tourmanagertool.DTO.request.DeleteClientRequest;
 import com.example.tourmanagertool.DTO.request.ObtainClientRequest;
-import com.example.tourmanagertool.DTO.response.ChangeClientResponse;
-import com.example.tourmanagertool.DTO.response.CreateClientResponse;
-import com.example.tourmanagertool.DTO.response.ObtainClientResponse;
-import com.example.tourmanagertool.DTO.response.UniqueResponse;
+import com.example.tourmanagertool.DTO.response.*;
 import com.example.tourmanagertool.entities.EntityTour;
 import com.example.tourmanagertool.repository.Repository;
 import org.modelmapper.ModelMapper;
@@ -33,21 +30,21 @@ public class ClientServiceImplementation implements ClientService {
         //берем репозиторий и ищем почту по нему
         //list используем т.к. репозиторий возвращает лист
         List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
-        if(resultSearchByEmail.size()!=0){
-            response = new UniqueResponse("Клиент с такой почтой уже существует",null);
-        }else{//второй аргумент - тип данных в который надо перевести, первый аргумент - из чего перевести
-            EntityTour modelToSaveFromDTO = modelMapper.map(request,EntityTour.class);
+        if (resultSearchByEmail.size() != 0) {
+            response = new UniqueResponse("Клиент с такой почтой уже существует", null);
+        } else {//второй аргумент - тип данных в который надо перевести, первый аргумент - из чего перевести
+            EntityTour modelToSaveFromDTO = modelMapper.map(request, EntityTour.class);
             //метод saveAndFlush - относится к jpa (часть спринга) и в случае экспешина он выдаст ошибку
             EntityTour result = repository.saveAndFlush(modelToSaveFromDTO);//-сохраняем в БД
-            if (result!=null ){
+            if (result != null) {
 
 
                 //конвертируем обратно из ентите в ДТО:
-            CreateClientResponse responseDTOFromEntity = modelMapper.map(result,CreateClientResponse.class);
+                CreateClientResponse responseDTOFromEntity = modelMapper.map(result, CreateClientResponse.class);
                 //отправляем это на фронт
-            response = new UniqueResponse("Всё успешно добавлено в БД",responseDTOFromEntity);
-            }else{//null - контакт с БД рухнул
-                response = new UniqueResponse("Что-то не так на стороне БД",null);
+                response = new UniqueResponse("Всё успешно добавлено в БД", responseDTOFromEntity);
+            } else {//null - контакт с БД рухнул
+                response = new UniqueResponse("Что-то не так на стороне БД", null);
             }
         }
 
@@ -62,29 +59,29 @@ public class ClientServiceImplementation implements ClientService {
         // т.е. можно менять только телефон и имя
         List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
         if (resultSearchByEmail.size() == 0) {
-            response = new UniqueResponse("Клиент с такой почтой не существует", null);}
-            else{
+            response = new UniqueResponse("Клиент с такой почтой не существует", null);
+        } else {
             //получаем объект с указанной почтой
 
-                EntityTour clientForChanging = resultSearchByEmail.get(0);
-                clientForChanging.setPhoneNumber(request.getPhoneNumber());
-                clientForChanging.setUsername(request.getUserName());
-                EntityTour result = repository.save(clientForChanging);
+            EntityTour clientForChanging = resultSearchByEmail.get(0);
+            clientForChanging.setPhoneNumber(request.getPhoneNumber());
+            clientForChanging.setUsername(request.getUserName());
+            EntityTour result = repository.save(clientForChanging);
 
 
-                if (result!=null  ){
+            if (result != null) {
 
-                    //конвертируем обратно из ентите в ДТО:
-                    ChangeClientResponse responseDTOFromEntity = modelMapper.map(result,ChangeClientResponse.class);
-                    //отправляем это на фронт
-                    response = new UniqueResponse("Всё успешно добавлено в БД",responseDTOFromEntity);
-                }else{//null - контакт с БД рухнул
-                    response = new UniqueResponse("Что-то не так на стороне БД",null);
-                }
-
+                //конвертируем обратно из ентите в ДТО:
+                ChangeClientResponse responseDTOFromEntity = modelMapper.map(result, ChangeClientResponse.class);
+                //отправляем это на фронт
+                response = new UniqueResponse("Всё успешно добавлено в БД", responseDTOFromEntity);
+            } else {//null - контакт с БД рухнул
+                response = new UniqueResponse("Что-то не так на стороне БД", null);
             }
-            return response;
+
         }
+        return response;
+    }
 
     @Override
     @Transactional
@@ -94,14 +91,16 @@ public class ClientServiceImplementation implements ClientService {
 
         List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
         if (resultSearchByEmail.size() == 0) {
-            response = new UniqueResponse("Клиента с такой почтой  не существовало и до этого", null);}
-        else{
+            response = new UniqueResponse("Клиента с такой почтой  не существовало и до этого", null);
+        } else {
             //спринг сам создает метод в дебрях своего магического фреймворка
             repository.deleteByEmail(request.getEmail());//-удаляем из БД
-            if(repository.findByEmail(request.getEmail()).size()!=0){
+            if (repository.findByEmail(request.getEmail()).size() != 0) {
 
-            response = new UniqueResponse("данные не удалены, ошибка в бд",null);}
-            else {response = new UniqueResponse("данные успешно удалены",null);}
+                response = new UniqueResponse("данные не удалены, ошибка в бд", null);
+            } else {
+                response = new UniqueResponse("данные успешно удалены", null);
+            }
 
 
         }
@@ -115,12 +114,12 @@ public class ClientServiceImplementation implements ClientService {
 
         List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
         if (resultSearchByEmail.size() == 0) {
-            response = new UniqueResponse("Клиента с такой почтой не существует", null);}
-        else{
+            response = new UniqueResponse("Клиента с такой почтой не существует", null);
+        } else {
             EntityTour requestedClient = resultSearchByEmail.get(0);
             ObtainClientResponse obtainDTOFromEntity = modelMapper.map(requestedClient, ObtainClientResponse.class);
             //отправляем это на фронт
-            response = new UniqueResponse("Информация о запрошенном пользователе: ",obtainDTOFromEntity);
+            response = new UniqueResponse("Информация о запрошенном пользователе: ", obtainDTOFromEntity);
 
 
         }
@@ -130,7 +129,19 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public UniqueResponse obtainAllClients() {
-        return null;
+        UniqueResponse response;
+
+        List<EntityTour> findAllClients = repository.findAll();
+        if (findAllClients.size() == 0) {
+            response = new UniqueResponse("Клиентов нет, сначала собери клиентов", null);
+        } else {
+            List<ObtainAllClientsResponse> obtainAllDTOFromEntity = modelMapper.map(findAllClients, List.class);
+            response = new UniqueResponse("информация о всех клиентах", obtainAllDTOFromEntity);
+
+
+        }
+
+        return response;
     }
 
 

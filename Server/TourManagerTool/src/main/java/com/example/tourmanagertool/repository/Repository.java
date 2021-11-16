@@ -10,6 +10,7 @@ import java.util.List;
 public interface Repository extends JpaRepository<EntityTour,Integer> {
     List<EntityTour> findByEmail(String email);
     void deleteByEmail(String email);
+    List<EntityTour> findAll();
     //  UniqueResponse changeClient(CreateClientRequest request);
 
 }
