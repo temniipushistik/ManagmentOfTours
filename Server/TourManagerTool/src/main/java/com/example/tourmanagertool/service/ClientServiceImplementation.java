@@ -14,6 +14,10 @@ import com.example.tourmanagertool.repository.Repository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+
+import javax.persistence.PersistenceContext;
 
 @Service
 public class ClientServiceImplementation implements ClientService {
@@ -81,8 +85,9 @@ public class ClientServiceImplementation implements ClientService {
             return response;
         }
 
-
     @Override
+    @Transactional
+
     public UniqueResponse deleteClient(DeleteClientRequest request) {
         UniqueResponse response;
 
@@ -92,8 +97,11 @@ public class ClientServiceImplementation implements ClientService {
         else{
             //спринг сам создает метод в дебрях своего магического фреймворка
             repository.deleteByEmail(request.getEmail());//-удаляем из БД
+            if(repository.findByEmail(request.getEmail()).size()!=0){
 
-            response = new UniqueResponse("данные удалены",null);
+            response = new UniqueResponse("данные не удалены, ошибка в бд",null);}
+            else {response = new UniqueResponse("данные успешно удалены",null);}
+
 
         }
 
