@@ -84,7 +84,20 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public UniqueResponse deleteClient(DeleteClientRequest request) {
-        return null;
+        UniqueResponse response;
+
+        List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
+        if (resultSearchByEmail.size() == 0) {
+            response = new UniqueResponse("Клиента с такой почтой  не существовало и до этого", null);}
+        else{
+            //спринг сам создает метод в дебрях своего магического фреймворка
+            repository.deleteByEmail(request.getEmail());//-удаляем из БД
+
+            response = new UniqueResponse("данные удалены",null);
+
+        }
+
+        return response;
     }
 
     @Override
