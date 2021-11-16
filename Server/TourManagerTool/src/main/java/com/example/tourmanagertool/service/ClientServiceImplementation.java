@@ -6,6 +6,7 @@ import com.example.tourmanagertool.DTO.request.ChangeClientRequest;
 import com.example.tourmanagertool.DTO.request.CreateClientRequest;
 import com.example.tourmanagertool.DTO.request.DeleteClientRequest;
 import com.example.tourmanagertool.DTO.request.ObtainClientRequest;
+import com.example.tourmanagertool.DTO.response.ChangeClientResponse;
 import com.example.tourmanagertool.DTO.response.CreateClientResponse;
 import com.example.tourmanagertool.DTO.response.UniqueResponse;
 import com.example.tourmanagertool.entities.EntityTour;
@@ -35,6 +36,7 @@ public class ClientServiceImplementation implements ClientService {
             EntityTour result = repository.saveAndFlush(modelToSaveFromDTO);//-сохраняем в БД
             if (result!=null  ){
 
+
                 //конвертируем обратно из ентите в ДТО:
             CreateClientResponse responseDTOFromEntity = modelMapper.map(result,CreateClientResponse.class);
                 //отправляем это на фронт
@@ -50,8 +52,28 @@ public class ClientServiceImplementation implements ClientService {
 
     @Override
     public UniqueResponse changeClient(ChangeClientRequest request) {
-        return null;
-    }
+        UniqueResponse response;
+
+        List<EntityTour> resultSearchByEmail = repository.findByEmail(request.getEmail());
+        if (resultSearchByEmail.size() == 0) {
+            response = new UniqueResponse("Клиент с такой почтой не существует", null);}
+            else{
+                EntityTour modelToChangeFromDTO = modelMapper.map(request,EntityTour.class);
+                EntityTour result = repository.saveAndFlush(modelToChangeFromDTO);//-сохраняем в БД???
+                if (result!=null  ){
+
+                    //конвертируем обратно из ентите в ДТО:
+                    ChangeClientResponse responseDTOFromEntity = modelMapper.map(result,ChangeClientResponse.class);
+                    //отправляем это на фронт
+                    response = new UniqueResponse("Всё успешно добавлено в БД",responseDTOFromEntity);
+                }else{//null - контакт с БД рухнул
+                    response = new UniqueResponse("Что-то не так на стороне БД",null);
+                }
+
+            }
+            return response;
+        }
+
 
     @Override
     public UniqueResponse deleteClient(DeleteClientRequest request) {
