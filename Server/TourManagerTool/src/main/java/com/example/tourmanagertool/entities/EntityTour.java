@@ -11,26 +11,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
-    // у него приватные поля всегда
-//entities - структура базы данных
-//лобок создает все гетеры сетеры, конструкторы с параметрами и без
-    @Entity
+
+//entities are structure of database
+//lombok creates getters, setters, constructors with all args and without args below
+
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @javax.persistence.Entity
 
-    public class ExampleEntity {
-        //create a key
+    public class EntityTour {
+        //creat a key
         @Id
-        // Algorithm for creating id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        private long id;
-
+        int id;
         private String username;
         private String email;
         private String phoneNumber;
         //how does user find the company:
         private String sourceOfTraffic;
 
+
+
     }
+
