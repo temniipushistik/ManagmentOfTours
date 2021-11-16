@@ -135,7 +135,13 @@ public class ClientServiceImplementation implements ClientService {
         if (findAllClients.size() == 0) {
             response = new UniqueResponse("Клиентов нет, сначала собери клиентов", null);
         } else {
-            List<ObtainAllClientsResponse> obtainAllDTOFromEntity = modelMapper.map(findAllClients, List.class);
+            //создаем список, такой же как и в репозитории:
+            List<ObtainClientResponse> obtainClientListDTOFromEntity = modelMapper.map(findAllClients, List.class);
+            //создаем объект, который будем передавать в фронт
+            ObtainAllClientsResponse obtainAllDTOFromEntity = new ObtainAllClientsResponse();
+            //и заполняем поля через сетерп
+            obtainAllDTOFromEntity.setAllClients(obtainClientListDTOFromEntity);
+
             response = new UniqueResponse("информация о всех клиентах", obtainAllDTOFromEntity);
 
 
