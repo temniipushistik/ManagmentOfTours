@@ -15,6 +15,11 @@ public class BotImplementation extends TelegramLongPollingBot {
     private String userName;
     //создаем клавиатуру:
     ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    private long chat_id;
+
+    public long getChat_id() {
+        return chat_id;
+    }
 
     public String getBotUsername() {
         return USERNAME;
@@ -52,39 +57,48 @@ public class BotImplementation extends TelegramLongPollingBot {
             keyboard.add(keyboardRowFourthRow);
             keyboard.add(keyboardRowFifthRow);
             replyKeyboardMarkup.setKeyboard(keyboard);
-            return "Привествую, "+userName+", выберете что хотите сделать:";
+            return "Привествую, " + userName + ", выберете что хотите сделать:";
 
         }
         if (msg.equals("Добавить пользователя")) {
             keyboard.clear();
-            return "Вы выбрали добавить пользователя";
+            SendMessage createUserMsg = new SendMessage();
+            createUserMsg.setText("Введите почту нового пользователя");
+            String userMsgText = createUserMsg.getText();
+            if(userMsgText!=null) {
+
+            createUser createUser = new createUser();
+           return createUser.responseCreateUser(userMsgText);
+
+
+            }
+
+
+            return "введите почту пользователя:";
         }
-        if(msg.equals("Редактировать пользователя")){
+        if (msg.equals("Редактировать пользователя")) {
             keyboard.clear();
             return "вы выбрали редактирование пользователя";
         }
-        if(msg.equals("Удалить пользователя")){
+        if (msg.equals("Удалить пользователя")) {
             keyboard.clear();
             return "вы выбрали удалить пользователя";
         }
-        if(msg.equals("Получить пользователя")){
+        if (msg.equals("Получить пользователя")) {
             keyboard.clear();
             return "вы выбрали получить пользователя";
         }
-        if(msg.equals("Получить всех пользователей")){
+        if (msg.equals("Получить всех пользователей")) {
             keyboard.clear();
             return "вы выбрали получить всех пользователей";
-        }
-        else return  "у меня нет ответа на этот вопрос, я же просто бот";
+        } else return "у меня нет ответа на этот вопрос, я же просто бот";
 
     }
 
 
-
-
     public void onUpdateReceived(Update update) {
         if (update.getMessage() != null) {
-            long chat_id = update.getMessage().getChatId();
+            chat_id = update.getMessage().getChatId();
             //получаем ник пользователя
             userName = update.getMessage().getFrom().getUserName();
 
