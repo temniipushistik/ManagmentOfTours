@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class BotImplementation extends TelegramLongPollingBot {
     private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
     private static final String USERNAME = "Tour_ManagerBot";
+    private String userName;
     //создаем клавиатуру:
     ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
     public String getBotUsername() {
         return USERNAME;
     }
+
 
     public String getBotToken() {
         return TOKEN;
@@ -50,11 +52,33 @@ public class BotImplementation extends TelegramLongPollingBot {
             keyboard.add(keyboardRowFourthRow);
             keyboard.add(keyboardRowFifthRow);
             replyKeyboardMarkup.setKeyboard(keyboard);
-        }
-            return "Привествую, менеджер, пожалуйста, выберете что хотите сделать";
-
+            return "Привествую, "+userName+", выберете что хотите сделать:";
 
         }
+        if (msg.equals("Добавить пользователя")) {
+            keyboard.clear();
+            return "Вы выбрали добавить пользователя";
+        }
+        if(msg.equals("Редактировать пользователя")){
+            keyboard.clear();
+            return "вы выбрали редактирование пользователя";
+        }
+        if(msg.equals("Удалить пользователя")){
+            keyboard.clear();
+            return "вы выбрали удалить пользователя";
+        }
+        if(msg.equals("Получить пользователя")){
+            keyboard.clear();
+            return "вы выбрали получить пользователя";
+        }
+        if(msg.equals("Получить всех пользователей")){
+            keyboard.clear();
+            return "вы выбрали получить всех пользователей";
+        }
+        else return  "у меня нет ответа на этот вопрос, я же просто бот";
+
+    }
+
 
 
 
@@ -62,7 +86,7 @@ public class BotImplementation extends TelegramLongPollingBot {
         if (update.getMessage() != null) {
             long chat_id = update.getMessage().getChatId();
             //получаем ник пользователя
-            String userName = update.getMessage().getFrom().getUserName();
+            userName = update.getMessage().getFrom().getUserName();
 
 
             try {
