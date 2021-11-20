@@ -60,6 +60,7 @@ public class CreateUser {
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("Name: "+ update.getMessage().getText());
             return sendMessage;
+
         }else if (update.getMessage().getText().equals("Далее") && (BotImplementation.userState.get(userName) != null) && (BotImplementation.userState.get(userName).size() == 4)){
             ArrayList<String> status = BotImplementation.userState.get(userName);
             status.add(update.getMessage().getText());
