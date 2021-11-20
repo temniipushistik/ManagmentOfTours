@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CreateUser2 {
+    //засчет флага двигаемся по циклу добавления нового пользователя
     static int flag;
-    HashMap<String, String> client = new HashMap<>();
+    static HashMap<String, String> client = new HashMap<>();
 
 
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -34,10 +35,24 @@ public class CreateUser2 {
             flag = 2;
             return sendMessage;
 
-            //почта введена корректно:
+        } else if (update.getMessage().getText() == null) {
+            setConfirmationKeyboardMarkup();
+            SendMessage sendMessage = new Start().run(update);
+            sendMessage.setReplyMarkup(replyKeyboardMarkup);
+            sendMessage.setChatId(update.getMessage().getChatId() + "");
+            sendMessage.setText("вы ввели пустое поле. Не знаю, как так получилось,но самое время начать ввод сначала");
+            return sendMessage;
+
+
+            //почта введена корректно?
         } else if ((flag == 2) && (update.getMessage().getText().equals("Да, далее"))) {
             flag = 3;
             return addName(update);
+        } else if ((flag == 2) && (update.getMessage().getText().equals("Нет, назад"))) {
+            client.remove("email");
+            flag--;
+            return addEmail(update);
+
         } else if (flag == 3 && update.getMessage().getText() != null) {
             client.put("userName", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
@@ -48,9 +63,16 @@ public class CreateUser2 {
             flag = 4;
             return sendMessage;
 
+            //имя пользователя корректно?
+
         } else if (flag == 4 && (update.getMessage().getText().equals("Да, далее"))) {
             flag = 5;
             return addPhone(update);
+
+        } else if (flag == 4 && (update.getMessage().getText().equals("Нет, назад"))) {
+            flag--;
+            client.remove("userName");
+            return addName(update);
 
         } else if (flag == 5 && update.getMessage().getText() != null) {
             client.put("phoneNumber", update.getMessage().getText());
@@ -64,6 +86,12 @@ public class CreateUser2 {
         } else if (flag == 6 && update.getMessage().getText().equals("Да, далее")) {
             flag = 7;
             return sourceOfTraffic(update);
+        } else if (flag == 6 && update.getMessage().getText().equals("Нет, назад")) {
+            flag--;
+            client.remove("phoneNumber");
+
+            return addPhone(update);
+
         } else if (flag == 7 && update.getMessage().getText() != null) {
             client.put("sourceOfTraffic", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
@@ -73,14 +101,23 @@ public class CreateUser2 {
             sendMessage.setText("источник траффика корректен?");
             flag = 8;
             return sendMessage;
-            //если источник траффика корректен:
+            //если источник траффика корректен?
         } else if (flag == 8 && update.getMessage().getText().equals("Да, далее")) {
             flag = 9;
             return finish(update);
+        } else if (flag == 8 && update.getMessage().getText().equals("Нет, назад")) {
+            client.remove("sourceOfTraffic");
+            flag--;
+            return finish(update);
 
-        } else if (flag == 9 && update.getMessage().getText().equals("Да, далее")) {
-            flag = 10;
-            return null;
+        } else if (update.getMessage().getText().equals("в главное меню")) {
+            client.clear();
+            //удалить пользователя
+            SendMessage sendMessage = new Start().run(update);
+            sendMessage.setChatId(update.getMessage().getChatId() + "");
+            sendMessage.setText("Данные вводимого пользователя удалены");
+
+            return sendMessage;
 
         }
 
@@ -123,30 +160,26 @@ public class CreateUser2 {
 
     }
 
-    private SendMessage navigation(Update update) {
-
-        SendMessage sendMessage = new SendMessage();
-        setConfirmationKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("Данные указаны верно?");
-
-        flag++;
-        return sendMessage;
-    }
 
     private SendMessage bullshit(Update update) {
-        SendMessage sendMessage = new SendMessage();
+        SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("хуета хует");
+        sendMessage.setText("вылетел из цикла, косяк в логике");
+
         return sendMessage;
 
     }
 
     private SendMessage finish(Update update) {
-        String textMessage = "Пользователь успешно добавлен ";
-
+        String textMessage = "Пользователь успешно добавлен:\n";// = client.get("sourceOfTraffic") + "";
+        for (String name : client.keySet()) {
+            textMessage += (name + " : " + client.get(name) + "\n");
+        }
+        //String key = name.toString();
+        //  String value = example.get(name).toString();
+        //String textMessage = "Пользователь успешно добавлен ";
         SendMessage sendMessage = new Start().run(update);
+        sendMessage.setChatId(update.getMessage().getChatId() + "");
         sendMessage.setText(textMessage);
         return sendMessage;
     }
