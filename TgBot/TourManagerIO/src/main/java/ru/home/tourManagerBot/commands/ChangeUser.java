@@ -42,7 +42,7 @@ public class ChangeUser {
                 flagOfChanging = 2;
                 return changeName(update);
             } else {
-
+                setConfirmationKeyboardMarkup();
                 SendMessage sendMessage = new Start().run(update);
                 sendMessage.setChatId(update.getMessage().getChatId() + "");
                 sendMessage.setText("такой почты нет. Попробуйте снова");
@@ -59,19 +59,17 @@ public class ChangeUser {
             sendMessage.setText("откорректированное имя корректно?");
             flagOfChanging = 3;
             return sendMessage;
-        }
-
-             else if (flagOfChanging == 3 && (update.getMessage().getText() != "Да, далее")){
+        } else if (flagOfChanging == 3 && (update.getMessage().getText() != "Да, далее")) {
             flagOfChanging = 4;
             return changePhone(update);
-        }
-        else if (flagOfChanging == 3 && (update.getMessage().getText() != "Нет, назад")){
+        } else if (flagOfChanging == 3 && (update.getMessage().getText() != "Нет, назад")) {
             flagOfChanging--;
             BotImplementation.mainClientBD.remove("userName");
-            return changeName(update);}
+            return changeName(update);
+        }
 
         //добавляем номер телефона в коллекцию
-        else if (flagOfChanging == 4&& (update.getMessage().getText() != null)){
+        else if (flagOfChanging == 4 && (update.getMessage().getText() != null)) {
             BotImplementation.mainClientBD.put("phoneNumber", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
@@ -80,27 +78,24 @@ public class ChangeUser {
             sendMessage.setText("откорректированный телефон корректен?");
             flagOfChanging = 5;
             return sendMessage;
-        }
-        else if (flagOfChanging == 5 && (update.getMessage().getText() != "Да, далее")){
+        } else if (flagOfChanging == 5 && (update.getMessage().getText() != "Да, далее")) {
             flagOfChanging = 6;
             return finish(update);
-        }
-        else if (flagOfChanging == 5 && (update.getMessage().getText() != "Нет, назад")){
+        } else if (flagOfChanging == 5 && (update.getMessage().getText() != "Нет, назад")) {
             flagOfChanging--;
             BotImplementation.mainClientBD.remove("phoneNumber");
-            return changePhone(update);}
+            return changePhone(update);
+        }else{
+            return bullshit(update);
+        }
 
 
 
-
-
-   return null; }
-
-
-
+    }
 
 
     public SendMessage requestEmail(Update update) {
+        setConfirmationKeyboardMarkup();
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId() + "");
         sendMessage.setText("Введите Email пользователя, данные которого хотите изменить");
@@ -110,23 +105,31 @@ public class ChangeUser {
     public SendMessage changeName(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        String textMessage ="Пользователь найден: \n";
+        String textMessage = "Клиент найден: \n";
         for (String name : BotImplementation.mainClientBD.keySet()) {
             textMessage += (name + " : " + BotImplementation.mainClientBD.get(name) + "\n");
         }
-        textMessage+="Введите новое имя клиента:";
+        textMessage += "Введите новое имя клиента:";
 
         sendMessage.setText(textMessage);
         return sendMessage;
     }
 
-    SendMessage changePhone(Update update){
+    SendMessage changePhone(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId() + "");
         sendMessage.setText("Введите новый номер телефона");
         return sendMessage;
     }
-//завершаем и выводим данные
+
+    private SendMessage bullshit(Update update) {
+        SendMessage sendMessage = new Start().run(update);
+        sendMessage.setChatId(update.getMessage().getChatId() + "");
+        sendMessage.setText("вылетел из цикла, косяк в логике");
+        return sendMessage;
+    }
+
+    //завершаем и выводим данные
     private SendMessage finish(Update update) {
         String textMessage = "Пользователь успешно изменён. Новые данные:\n";// = client.get("sourceOfTraffic") + "";
         for (String name : BotImplementation.mainClientBD.keySet()) {

@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.home.tourManagerBot.commands.ChangeUser;
 import ru.home.tourManagerBot.commands.CreateUser2;
+import ru.home.tourManagerBot.commands.ObtainUser;
 import ru.home.tourManagerBot.commands.Start;
 
 import java.util.HashMap;
@@ -33,8 +34,15 @@ public class BotImplementation extends TelegramLongPollingBot {
     private static boolean create = false;
     private static boolean change = false;
     private static boolean obtain = false;
-    private static boolean obtainAll = false;
     private static boolean delete = false;
+
+    public static boolean isObtain() {
+        return obtain;
+    }
+
+    public static void setObtain(boolean obtain) {
+        BotImplementation.obtain = obtain;
+    }
 
     public static boolean isChange() {
         return change;
@@ -90,6 +98,8 @@ public class BotImplementation extends TelegramLongPollingBot {
                 } else if (text.equals("Редактировать пользователя") || (change ==true)) {
                     execute(new ChangeUser().run(update));
 
+                }else if (text.equals("Получить пользователя")|| (obtain ==true)){
+                    execute((new ObtainUser().run(update)));
                 }
             } catch (TelegramApiException e) {
                 e.printStackTrace();
