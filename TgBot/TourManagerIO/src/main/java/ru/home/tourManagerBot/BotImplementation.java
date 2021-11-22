@@ -97,6 +97,9 @@ public class BotImplementation extends TelegramLongPollingBot {
                 if (text.equals("/start")) {
                     execute(new Start().run(update));
                 }
+                else if (text.equals("Удалить пользователя")||delete==true){
+                    execute((new DeleteClient().run(update)));
+                }
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
 
             } catch (TelegramApiException e) {
