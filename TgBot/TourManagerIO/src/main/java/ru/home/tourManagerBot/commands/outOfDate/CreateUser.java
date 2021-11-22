@@ -1,10 +1,11 @@
-package ru.home.tourManagerBot.commands;
+package ru.home.tourManagerBot.commands.outOfDate;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.home.tourManagerBot.BotImplementation;
+import ru.home.tourManagerBot.commands.Start;
 
 import java.util.ArrayList;
 

@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class CreateUser2 {
     //засчет флага двигаемся по циклу добавления нового пользователя
-    static int flag;
+    static int flagOfCreating;
     static HashMap<String, String> client = new HashMap<>();
 
 
@@ -21,18 +21,18 @@ public class CreateUser2 {
 
         if (update.getMessage().getText().equals("Добавить пользователя")) {
             BotImplementation.setCreate(true);
-            flag = 1;
+            flagOfCreating = 1;
             //запрашивает почту
             return addEmail(update);
             //вводим почту и сохраняем в коллекции
-        } else if (flag == 1 && update.getMessage().getText() != null) {
+        } else if (flagOfCreating == 1 && update.getMessage().getText() != null) {
             client.put("email", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("почта корректна?");
-            flag = 2;
+            flagOfCreating = 2;
             return sendMessage;
 
         } else if (update.getMessage().getText() == null) {
@@ -45,69 +45,69 @@ public class CreateUser2 {
 
 
             //почта введена корректно?
-        } else if ((flag == 2) && (update.getMessage().getText().equals("Да, далее"))) {
-            flag = 3;
+        } else if ((flagOfCreating == 2) && (update.getMessage().getText().equals("Да, далее"))) {
+            flagOfCreating = 3;
             return addName(update);
-        } else if ((flag == 2) && (update.getMessage().getText().equals("Нет, назад"))) {
+        } else if ((flagOfCreating == 2) && (update.getMessage().getText().equals("Нет, назад"))) {
             client.remove("email");
-            flag--;
+            flagOfCreating--;
             return addEmail(update);
 
-        } else if (flag == 3 && update.getMessage().getText() != null) {
+        } else if (flagOfCreating == 3 && update.getMessage().getText() != null) {
             client.put("userName", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("Имя корректно?");
-            flag = 4;
+            flagOfCreating = 4;
             return sendMessage;
 
             //имя пользователя корректно?
 
-        } else if (flag == 4 && (update.getMessage().getText().equals("Да, далее"))) {
-            flag = 5;
+        } else if (flagOfCreating == 4 && (update.getMessage().getText().equals("Да, далее"))) {
+            flagOfCreating = 5;
             return addPhone(update);
 
-        } else if (flag == 4 && (update.getMessage().getText().equals("Нет, назад"))) {
-            flag--;
+        } else if (flagOfCreating == 4 && (update.getMessage().getText().equals("Нет, назад"))) {
+            flagOfCreating--;
             client.remove("userName");
             return addName(update);
 
-        } else if (flag == 5 && update.getMessage().getText() != null) {
+        } else if (flagOfCreating == 5 && update.getMessage().getText() != null) {
             client.put("phoneNumber", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("номер телефона корректен?");
-            flag = 6;
+            flagOfCreating = 6;
             return sendMessage;
-        } else if (flag == 6 && update.getMessage().getText().equals("Да, далее")) {
-            flag = 7;
+        } else if (flagOfCreating == 6 && update.getMessage().getText().equals("Да, далее")) {
+            flagOfCreating = 7;
             return sourceOfTraffic(update);
-        } else if (flag == 6 && update.getMessage().getText().equals("Нет, назад")) {
-            flag--;
+        } else if (flagOfCreating == 6 && update.getMessage().getText().equals("Нет, назад")) {
+            flagOfCreating--;
             client.remove("phoneNumber");
 
             return addPhone(update);
 
-        } else if (flag == 7 && update.getMessage().getText() != null) {
+        } else if (flagOfCreating == 7 && update.getMessage().getText() != null) {
             client.put("sourceOfTraffic", update.getMessage().getText());
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("источник траффика корректен?");
-            flag = 8;
+            flagOfCreating = 8;
             return sendMessage;
             //если источник траффика корректен?
-        } else if (flag == 8 && update.getMessage().getText().equals("Да, далее")) {
-            flag = 9;
+        } else if (flagOfCreating == 8 && update.getMessage().getText().equals("Да, далее")) {
+            flagOfCreating = 9;
             return finish(update);
-        } else if (flag == 8 && update.getMessage().getText().equals("Нет, назад")) {
+        } else if (flagOfCreating == 8 && update.getMessage().getText().equals("Нет, назад")) {
             client.remove("sourceOfTraffic");
-            flag--;
+            flagOfCreating--;
             return finish(update);
 
         } else if (update.getMessage().getText().equals("в главное меню")) {
@@ -175,6 +175,8 @@ public class CreateUser2 {
         for (String name : client.keySet()) {
             textMessage += (name + " : " + client.get(name) + "\n");
         }
+        BotImplementation.setCreate(false);
+        BotImplementation.mainClientBD = client;
         //String key = name.toString();
         //  String value = example.get(name).toString();
         //String textMessage = "Пользователь успешно добавлен ";
