@@ -8,7 +8,7 @@ import ru.home.tourManagerBot.commands.*;
 import java.util.HashMap;
 
 public class BotImplementation extends TelegramLongPollingBot {
-  // old private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
+    // old private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
     private static final String TOKEN = "";
     private static final String USERNAME = "Tour_ManagerBot";
     //private String userName;
@@ -96,6 +96,9 @@ public class BotImplementation extends TelegramLongPollingBot {
             try {
                 if (text.equals("/start")) {
                     execute(new Start().run(update));
+                } else if (text.equals("Редактировать пользователя") || (change == true)) {
+                    execute(new ChangeClient().run(update));
+
                 }
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
 
