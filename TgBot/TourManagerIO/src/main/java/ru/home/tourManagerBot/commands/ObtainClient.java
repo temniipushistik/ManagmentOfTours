@@ -27,7 +27,7 @@ public class ObtainClient {
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new Start().run(update);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
-            sendMessage.setText("В базе ничего нет. Чтобы что-то отредактировать нужно сначала что-то создать");
+            sendMessage.setText("В базе ничего нет. Чтобы кого-то получить нужно сначала что-то создать");
             return sendMessage;
 
 
