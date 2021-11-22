@@ -96,7 +96,13 @@ public class BotImplementation extends TelegramLongPollingBot {
             try {
                 if (text.equals("/start")) {
                     execute(new Start().run(update));
-                }
+
+            }else if (text.equals("Получить пользователя")|| (obtain ==true)){
+                execute((new ObtainClient().run(update)));
+            }
+            else if (text.equals("Получить всех пользователей")){
+                execute((new ObtainAllClients().run(update)));
+            }
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
 
             } catch (TelegramApiException e) {
