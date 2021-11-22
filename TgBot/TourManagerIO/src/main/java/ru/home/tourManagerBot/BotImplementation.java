@@ -3,10 +3,7 @@ package ru.home.tourManagerBot;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.home.tourManagerBot.commands.ChangeUser;
-import ru.home.tourManagerBot.commands.CreateUser2;
-import ru.home.tourManagerBot.commands.ObtainUser;
-import ru.home.tourManagerBot.commands.Start;
+import ru.home.tourManagerBot.commands.*;
 
 import java.util.HashMap;
 
@@ -101,6 +98,9 @@ public class BotImplementation extends TelegramLongPollingBot {
                 }else if (text.equals("Получить пользователя")|| (obtain ==true)){
                     execute((new ObtainUser().run(update)));
                 }
+            else if (text.equals("Получить всех пользователей")){
+                execute((new ObtainAll().run(update)));
+            }
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
