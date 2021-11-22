@@ -33,6 +33,14 @@ public class BotImplementation extends TelegramLongPollingBot {
     private static boolean obtain = false;
     private static boolean delete = false;
 
+    public static boolean isDelete() {
+        return delete;
+    }
+
+    public static void setDelete(boolean delete) {
+        BotImplementation.delete = delete;
+    }
+
     public static boolean isObtain() {
         return obtain;
     }
@@ -101,6 +109,9 @@ public class BotImplementation extends TelegramLongPollingBot {
             else if (text.equals("Получить всех пользователей")){
                 execute((new ObtainAll().run(update)));
             }
+                else if (text.equals("Удалить пользователя")||delete==true){
+                    execute((new DeleteUser().run(update)));
+                }
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
