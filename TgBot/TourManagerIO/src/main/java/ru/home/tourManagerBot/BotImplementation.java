@@ -1,20 +1,76 @@
 package ru.home.tourManagerBot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.home.tourManagerBot.commands.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BotImplementation extends TelegramLongPollingBot {
     private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
     private static final String USERNAME = "Tour_ManagerBot";
-    private String userName;
+    //private String userName;
+    private String managerName;
+
+    public String getManagerName() {
+        return managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+//static HashMap<String, String> client = new HashMap<>();
+
+
+    public static void setCreate(boolean create) {
+        BotImplementation.create = create;
+    }
+
+    //статусы для операций
+    private static boolean create = false;
+    private static boolean change = false;
+    private static boolean obtain = false;
+    private static boolean delete = false;
+
+    public static boolean isDelete() {
+        return delete;
+    }
+
+    public static void setDelete(boolean delete) {
+        BotImplementation.delete = delete;
+    }
+
+    public static boolean isObtain() {
+        return obtain;
+    }
+
+    public static void setObtain(boolean obtain) {
+        BotImplementation.obtain = obtain;
+    }
+
+    public static boolean isChange() {
+        return change;
+    }
+
+    public static void setChange(boolean change) {
+        BotImplementation.change = change;
+    }
+
     //создаем клавиатуру:
-    ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    // ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+    private long chat_id;
+
+
+    //создаем мапу для хранения полученных данных. В стринг - @имя, массив эррея - данные об этом
+    //пользователе
+    public static HashMap<String, HashMap<String, String>> userState = new HashMap<>();
+    public static HashMap<String,String> mainClientBD = new HashMap<>();
+
+
+    public long getChat_id() {
+        return chat_id;
+    }
 
     public String getBotUsername() {
         return USERNAME;
@@ -26,81 +82,39 @@ public class BotImplementation extends TelegramLongPollingBot {
     }
 
 
-    public String getMessage(String msg) {
-        //создаем 5 рядов клавиатуры
-        ArrayList<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow keyboardRowFirstRow = new KeyboardRow();
-        KeyboardRow keyboardRowSecondRow = new KeyboardRow();
-        KeyboardRow keyboardRowThirdRow = new KeyboardRow();
-        KeyboardRow keyboardRowFourthRow = new KeyboardRow();
-        KeyboardRow keyboardRowFifthRow = new KeyboardRow();
-
-        replyKeyboardMarkup.setSelective(true);//видно всем пользователям
-        replyKeyboardMarkup.setResizeKeyboard(true);//подгоняет клавиатуру под высоту кнопок
-        replyKeyboardMarkup.setOneTimeKeyboard(false);//скрывать клаву после использования?
-        if (msg.equals("/start")) {
-            keyboard.clear();
-            keyboardRowFirstRow.add("Добавить пользователя");
-            keyboardRowSecondRow.add("Редактировать пользователя");
-            keyboardRowThirdRow.add("Удалить пользователя");
-            keyboardRowFourthRow.add("Получить пользователя");
-            keyboardRowFifthRow.add("Получить всех пользователей");
-
-            keyboard.add(keyboardRowFirstRow);
-            keyboard.add(keyboardRowSecondRow);
-            keyboard.add(keyboardRowThirdRow);
-            keyboard.add(keyboardRowFourthRow);
-            keyboard.add(keyboardRowFifthRow);
-            replyKeyboardMarkup.setKeyboard(keyboard);
-            return "Привествую, "+userName+", выберете что хотите сделать:";
-
-        }
-        if (msg.equals("Добавить пользователя")) {
-            keyboard.clear();
-            return "Вы выбрали добавить пользователя";
-        }
-        if(msg.equals("Редактировать пользователя")){
-            keyboard.clear();
-            return "вы выбрали редактирование пользователя";
-        }
-        if(msg.equals("Удалить пользователя")){
-            keyboard.clear();
-            return "вы выбрали удалить пользователя";
-        }
-        if(msg.equals("Получить пользователя")){
-            keyboard.clear();
-            return "вы выбрали получить пользователя";
-        }
-        if(msg.equals("Получить всех пользователей")){
-            keyboard.clear();
-            return "вы выбрали получить всех пользователей";
-        }
-        else return  "у меня нет ответа на этот вопрос, я же просто бот";
-
-    }
-
-
-
-
+    //этот метод вызывается !!!каждый раз!!! когда пользователь отправляет сообщение и всё сначала
+    //жопа с тем, что каждый раз мы заново проверяем
     public void onUpdateReceived(Update update) {
-        if (update.getMessage() != null) {
-            long chat_id = update.getMessage().getChatId();
+        if (update.getMessage() != null && update.getMessage().hasText()) {
+            chat_id = update.getMessage().getChatId();
+            setManagerName(update.getMessage().getFrom().getUserName());
             //получаем ник пользователя
-            userName = update.getMessage().getFrom().getUserName();
 
 
+            String text = update.getMessage().getText();
             try {
-                SendMessage sendMessage = new SendMessage();
+                if (text.equals("/start")) {
+                    execute(new Start().run(update));
+//если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
+                } else if (text.equals("Добавить пользователя") || (create == true)) {
+                    //выводит сообщение введите нужный емейл:
+                    execute(new CreateUser2().run(update));
 
-                sendMessage.setReplyMarkup(replyKeyboardMarkup);
-                sendMessage.setChatId(chat_id + "");
-                sendMessage.setText(getMessage(update.getMessage().getText()));
+                } else if (text.equals("Редактировать пользователя") || (change ==true)) {
+                    execute(new ChangeUser().run(update));
 
-                execute(sendMessage);
+                }else if (text.equals("Получить пользователя")|| (obtain ==true)){
+                    execute((new ObtainUser().run(update)));
+                }
+                else if (text.equals("Получить всех пользователей")){
+                    execute((new ObtainAll().run(update)));
+                }
+                else if (text.equals("Удалить пользователя")||delete==true){
+                    execute((new DeleteUser().run(update)));
+                }
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
-
     }
 }
