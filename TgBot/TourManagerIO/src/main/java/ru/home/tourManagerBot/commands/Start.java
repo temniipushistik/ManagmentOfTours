@@ -17,7 +17,7 @@ public class Start {
         setReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("Выберите нужно действие, "+ update.getMessage().getFrom().getUserName()+"?");
+        sendMessage.setText("Выберите нужно действие, "+ update.getMessage().getFrom().getUserName()+"!");
         return sendMessage;
     }
     //создаем клавиатуру:

@@ -98,8 +98,11 @@ public class BotImplementation extends TelegramLongPollingBot {
                     execute(new Start().run(update));
                 } else if (text.equals("Редактировать пользователя") || (change == true)) {
                     execute(new ChangeClient().run(update));
-
+                } else if (text.equals("Добавить пользователя") || (create == true)) {
+                    //выводит сообщение введите нужный емейл:
+                    execute(new CreateClient().run(update));
                 }
+
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
 
             } catch (TelegramApiException e) {
