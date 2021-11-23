@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class ObtainAllClients {
 
     static int sizeOfBD = 0;
-    // private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
     public SendMessage run(Update update) {
         sizeOfBD = BotImplementation.mainClientBD.size();
@@ -21,7 +20,7 @@ public class ObtainAllClients {
             return finish(update);
 
         } else if (update.getMessage().getText().equals("Получить всех пользователей") && (sizeOfBD == 0)) {
-            //  setConfirmationKeyboardMarkup();
+
             SendMessage sendMessage = new Start().run(update);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("В базе ничего нет. Чтобы что-то получить нужно сначала что-то создать");
@@ -54,28 +53,6 @@ public class ObtainAllClients {
     }
 
 
-       /* private void setConfirmationKeyboardMarkup() {
-
-            ArrayList<KeyboardRow> keyboard = new ArrayList<>();
-            KeyboardRow keyboardCorrect = new KeyboardRow();
-            KeyboardRow keyboardInCorrect = new KeyboardRow();
-            KeyboardRow keyboardCancel = new KeyboardRow();
-
-            replyKeyboardMarkup.setSelective(true);//видно всем пользователям
-            replyKeyboardMarkup.setResizeKeyboard(true);//подгоняет клавиатуру под высоту кнопок
-            replyKeyboardMarkup.setOneTimeKeyboard(true);//скрывать клаву после использования?
-
-            keyboard.clear();
-            keyboardCorrect.add("Да, далее");
-            keyboardInCorrect.add("Нет, назад");
-            keyboardCancel.add("в главное меню");
-
-            keyboard.add(keyboardCorrect);
-            keyboard.add(keyboardInCorrect);
-            keyboard.add(keyboardCancel);
-
-            replyKeyboardMarkup.setKeyboard(keyboard);
-      */
 }
 
 
