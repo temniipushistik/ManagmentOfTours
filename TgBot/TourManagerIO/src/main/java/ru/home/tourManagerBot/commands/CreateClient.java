@@ -1,9 +1,12 @@
 package ru.home.tourManagerBot.commands;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import ru.home.tourManagerBot.API.CreateService;
 import ru.home.tourManagerBot.BotImplementation;
 
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ public class CreateClient {
 
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
-    public SendMessage run(Update update) {
+    public SendMessage run(Update update) throws JsonProcessingException {
 
         if (update.getMessage().getText().equals("Добавить пользователя")) {
             BotImplementation.setCreate(true);
@@ -170,16 +173,18 @@ public class CreateClient {
 
     }
 
-    private SendMessage finish(Update update) {
+    private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage = "Пользователь успешно добавлен:\n";// = client.get("sourceOfTraffic") + "";
         for (String name : client.keySet()) {
             textMessage += (name + " : " + client.get(name) + "\n");
         }
         BotImplementation.setCreate(false);
         BotImplementation.mainClientBD = client;
-        //String key = name.toString();
-        //  String value = example.get(name).toString();
-        //String textMessage = "Пользователь успешно добавлен ";
+        //convert map to JSON
+        String userToJSON = new ObjectMapper().writeValueAsString(client);
+        //push to DB
+        CreateService.postJSon(userToJSON);
+
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
         sendMessage.setText(textMessage);
