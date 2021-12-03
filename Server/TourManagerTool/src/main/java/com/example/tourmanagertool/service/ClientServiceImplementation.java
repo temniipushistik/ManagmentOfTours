@@ -65,7 +65,7 @@ public class ClientServiceImplementation implements ClientService {
 
             EntityTour clientForChanging = resultSearchByEmail.get(0);
             clientForChanging.setPhoneNumber(request.getPhoneNumber());
-            clientForChanging.setUsername(request.getUserName());
+            clientForChanging.setUserName(request.getUserName());
             EntityTour result = repository.save(clientForChanging);
 
 
