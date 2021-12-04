@@ -64,7 +64,7 @@ public class ObtainAllClients {
        // obtainClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
 
         //передаем полученные данные в CreateService и получаем ответ от сервера
-        UniqueResponse uniqueResponse = ObtainAllService.postJSon(obtainAllClientsRequest);
+        UniqueResponse uniqueResponse = ObtainAllService.postJSon();
 
         if (uniqueResponse.getDto() == null) {
             //получаем из бэка ответа

@@ -6,11 +6,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.home.tourManagerBot.commands.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class BotImplementation extends TelegramLongPollingBot {
     // old private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
-    private static final String TOKEN = "";
+    private static final String TOKEN = "2067787448:AAGO1pLywCQ6tJHO-wif2aUqQQfqG8c7SxU";
     private static final String USERNAME = "Tour_ManagerBot";
     //private String userName;
     private String managerName;
@@ -110,12 +111,14 @@ public class BotImplementation extends TelegramLongPollingBot {
                     //выводит сообщение введите нужный емейл:
                     execute(new CreateClient().run(update));
                 } else if (text.equals("Удалить пользователя") || delete == true) {
-                    execute((new DeleteClient().run(update)));
+                    execute(new DeleteClient().run(update));
                 }
 
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
 
             } catch (TelegramApiException | JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

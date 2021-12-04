@@ -15,6 +15,8 @@ public class ObtainClientResponse {
     private String email;
     private String phoneNumber;
     private String sourceOfTraffic;
+    private Integer id;
+
     //id не нужен менеджеру, когда выводим данные о конкретном клиенте, типо нахуа, лишнее
 
 

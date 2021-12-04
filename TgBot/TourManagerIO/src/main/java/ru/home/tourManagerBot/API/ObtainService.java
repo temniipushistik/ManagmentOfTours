@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+
+import org.apache.http.client.methods.HttpGet;
+
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -17,16 +20,14 @@ public class ObtainService {
 
         HttpClient client = HttpClientBuilder.create().build();
         //мне нужен пост запрос, который будет обращаться к адресу в конструкторе
-        HttpPost get = new HttpPost("http://localhost:8080/api/client/obtain");
+
+        HttpGet get = new HttpGet("http://localhost:8080/api/client/obtain/"+request.getEmail());
         //конвертируем DTO объект, полученный из фронта, в JSON-строку для пересылки на сервер:
-        String requestToJSON = new ObjectMapper().writeValueAsString(request);
         try {
             //указываем кодировку  для JAVA строка будет в кодировке UTF-8
-            StringEntity strInJSON = new StringEntity(requestToJSON, "UTF-8");
             //указываем формат данных, которые мы передаем в качестве хидера, что присылаем ему json, ключ хидера - setContentType
-            strInJSON.setContentType("application/json;charset=utf-8");
             //добавляет в запрос мои данные:
-            get.setEntity(strInJSON);
+
             //выполняем запрос, в рес запишется значения, которые мне вернулись от сервера
             HttpResponse res = client.execute(get);
 

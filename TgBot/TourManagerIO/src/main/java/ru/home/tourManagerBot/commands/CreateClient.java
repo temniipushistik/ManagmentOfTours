@@ -122,6 +122,7 @@ public class CreateClient {
             SendMessage sendMessage = new Start().run(update);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("Данные вводимого пользователя удалены");
+            BotImplementation.setCreate(false);
 
             return sendMessage;
 
@@ -170,7 +171,7 @@ public class CreateClient {
     private SendMessage bullshit(Update update) {
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("вылетел из цикла, косяк в логике");
+        sendMessage.setText("вылетел из цикла создать пользователя, косяк в логике");
 
         return sendMessage;
 
@@ -184,6 +185,10 @@ public class CreateClient {
         }
         BotImplementation.setCreate(false);
         BotImplementation.mainClientBD = client;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         //convert map to JSON
          String clientToJSON = new ObjectMapper().writeValueAsString(client);*/
 
@@ -196,6 +201,9 @@ public class CreateClient {
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = CreateService.postJSon(createClientRequest);
 
+        BotImplementation.setCreate(false);
+
+
         if (uniqueResponse.getDto() == null) {
             //получаем из бэка ответа
             textMessage = uniqueResponse.getMessage();
@@ -207,6 +215,7 @@ public class CreateClient {
             textMessage +="\n"+new ObjectMapper().writeValueAsString(response);
 
         }
+
 
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");

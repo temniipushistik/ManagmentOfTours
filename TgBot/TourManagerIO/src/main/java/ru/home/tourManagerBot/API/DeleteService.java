@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -17,17 +19,12 @@ public class DeleteService {
         //создаем объект, содержит в себе API для запросов(POST|GET|DELETE) к адресу, который укажется ниже
         HttpClient client = HttpClientBuilder.create().build();
         //мне нужен пост запрос, который будет обращаться к адресу в конструкторе
-        HttpPost delete = new HttpPost("http://localhost:8080/api/client/delete");
-        //конвертируем DTO объект, полученный из фронта, в JSON-строку для пересылки на сервер:
-        String requestToJSON = new ObjectMapper().writeValueAsString(request);
+
+
+        HttpDelete delete = new HttpDelete("http://localhost:8080/api/client/delete/"+request.getEmail());
 
         try {
-            //указываем кодировку  для JAVA строка будет в кодировке UTF-8
-            StringEntity strInJSON = new StringEntity(requestToJSON, "UTF-8");
-            //указываем формат данных, которые мы передаем в качестве хидера, что присылаем ему json, ключ хидера - setContentType
-            strInJSON.setContentType("application/json;charset=utf-8");
-            //добавляет в запрос мои данные:
-            delete.setEntity(strInJSON);
+
             //выполняем запрос, в рес запишется значения, которые мне вернулись от сервера
             HttpResponse res = client.execute(delete);
 
@@ -40,7 +37,6 @@ public class DeleteService {
             throw new RuntimeException(e);
         }
         return uniqueResponse;
-
 
     }
 }

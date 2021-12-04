@@ -133,7 +133,7 @@ public class ChangeClient {
     private SendMessage bullshit(Update update) {
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("вылетел из цикла, косяк в логике");
+        sendMessage.setText("вылетел из цикла изменить пользователя, косяк в логике");
         return sendMessage;
     }
 

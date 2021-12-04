@@ -81,7 +81,7 @@ public class DeleteClient {
     private SendMessage bullshit(Update update) {
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("вылетел из цикла, косяк в логике");
+        sendMessage.setText("вылетел из цикла удаления, косяк в логике");
         return sendMessage;
     }
 
