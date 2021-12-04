@@ -140,16 +140,10 @@ public class ChangeClient {
     //завершаем и выводим данные
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
-        //String textMessage = "Пользователь успешно изменён. Новые данные:\n";// = client.get("sourceOfTraffic") + "";
-      //  for (String name : BotImplementation.mainClientBD.keySet()) {
-       //     textMessage += (name + " : " + BotImplementation.mainClientBD.get(name) + "\n");
-       // }
+
         BotImplementation.setChange(false);
 
 
-      //  sendMessage.setChatId(update.getMessage().getChatId() + "");
-      //  sendMessage.setText(textMessage);
-       // return sendMessage; */
 
         //создаем DTO и заполняем его
         ChangeClientRequest changeClientRequest = new ChangeClientRequest();

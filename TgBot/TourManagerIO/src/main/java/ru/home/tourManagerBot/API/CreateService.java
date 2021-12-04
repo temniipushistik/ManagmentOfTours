@@ -16,7 +16,7 @@ import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 public class CreateService {
 
-    //DTO - класс - отображающий структуру, в данном случае поля класса в виде строк
+
     //создаю запрос к своему серверу в аргументе в формате DTO, а возвращаю ответодом, что мне ответил сервер в формате DTO
     public static UniqueResponse postJSon(CreateClientRequest request) throws JsonProcessingException {
         UniqueResponse uniqueResponse;

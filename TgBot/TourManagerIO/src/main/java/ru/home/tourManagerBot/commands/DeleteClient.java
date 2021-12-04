@@ -97,13 +97,6 @@ public class DeleteClient {
         UniqueResponse uniqueResponse = DeleteService.postJSon(deleteClientRequest);
         textMessage = uniqueResponse.getMessage();
 
-        /*if (uniqueResponse.getDto() == null) {
-            //получаем из бэка ответа
-            textMessage = uniqueResponse.getMessage();
-        } else {
-            textMessage = uniqueResponse.getMessage();
-
-        }*/
 
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");

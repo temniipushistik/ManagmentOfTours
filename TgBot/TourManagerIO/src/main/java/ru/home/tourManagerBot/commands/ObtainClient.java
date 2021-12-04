@@ -36,29 +36,14 @@ public class ObtainClient {
 
             BotImplementation.setObtain(true);
             flagOfObtaining = 1;
-            /*setConfirmationKeyboardMarkup();
-            SendMessage sendMessage = new Start().run(update);
-            sendMessage.setChatId(update.getMessage().getChatId() + "");
-            sendMessage.setText("В базе ничего нет. Чтобы кого-то получить нужно сначала что-то создать");
-            return sendMessage;*/
+
             return inputEmail(update);
 
 
         } else if ((flagOfObtaining == 1) && (update.getMessage().getText() != null)) {
             String inputMail = update.getMessage().getText();
             BotImplementation.mainClientBD.put("email", inputMail);
-            //String baseMail = BotImplementation.mainClientBD.get("email");
-            //проверяем на наличие в базе
-           /* if (inputMail.equals(baseMail)) {
-                return finish(update);
 
-            } else {
-                setConfirmationKeyboardMarkup();
-                SendMessage sendMessage = new Start().run(update);
-                sendMessage.setChatId(update.getMessage().getChatId() + "");
-                sendMessage.setText("Такой почты нет. Попробуйте снова");
-                return sendMessage;
-            }*/
             return finish(update);
 
 
@@ -86,12 +71,7 @@ public class ObtainClient {
 
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
-     /*   String textMessage = "Клиент найден:\n";// = client.get("sourceOfTraffic") + "";
-        for (String name : BotImplementation.mainClientBD.keySet()) {
-            textMessage += (name + " : " + BotImplementation.mainClientBD.get(name) + "\n");
-        }
 
-      */
         BotImplementation.setObtain(false);
 
         ObtainClientRequest obtainClientRequest = new ObtainClientRequest();
@@ -117,13 +97,7 @@ public class ObtainClient {
         sendMessage.setText(textMessage);
         return sendMessage;
 
-       /* SendMessage sendMessage = new Start().run(update);
-        sendMessage.setChatId(update.getMessage().getChatId() + "");
 
-        sendMessage.setText(textMessage);
-        return sendMessage;
-
-        */
     }
 
 

@@ -179,18 +179,7 @@ public class CreateClient {
 
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
-      /*  String textMessage = "Пользователь успешно добавлен:\n";
-        for (String name : client.keySet()) {
-            textMessage += (name + " : " + client.get(name) + "\n");
-        }
-        BotImplementation.setCreate(false);
-        BotImplementation.mainClientBD = client;
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
-        //convert map to JSON
-         String clientToJSON = new ObjectMapper().writeValueAsString(client);*/
 
         //создаем DTO и заполняем его
         CreateClientRequest createClientRequest = new CreateClientRequest();

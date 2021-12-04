@@ -7,8 +7,6 @@ import org.apache.http.client.HttpClient;
 
 import org.apache.http.client.methods.HttpGet;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import ru.home.tourManagerBot.DTO.request.ObtainClientRequest;
@@ -24,9 +22,6 @@ public class ObtainService {
         HttpGet get = new HttpGet("http://localhost:8080/api/client/obtain/"+request.getEmail());
         //конвертируем DTO объект, полученный из фронта, в JSON-строку для пересылки на сервер:
         try {
-            //указываем кодировку  для JAVA строка будет в кодировке UTF-8
-            //указываем формат данных, которые мы передаем в качестве хидера, что присылаем ему json, ключ хидера - setContentType
-            //добавляет в запрос мои данные:
 
             //выполняем запрос, в рес запишется значения, которые мне вернулись от сервера
             HttpResponse res = client.execute(get);

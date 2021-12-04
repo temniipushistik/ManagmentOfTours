@@ -71,9 +71,6 @@ public class ObtainAllClients {
             textMessage = uniqueResponse.getMessage();
         } else {
             textMessage = uniqueResponse.getMessage();
-            //получаю объект, который записался в БД из бэка( т.е. часть DTO)
-            ObtainClientResponse response = new ObjectMapper().convertValue(uniqueResponse.getDto(), ObtainClientResponse.class);
-            //мапим в стринг и добавляем к тексту ответа
 
             for (LinkedHashMap item : (ArrayList<LinkedHashMap>) ((LinkedHashMap) uniqueResponse.getDto()).get("allClients")) {
                 ObtainClientResponse client = new ObjectMapper().convertValue(item, ObtainClientResponse.class);
