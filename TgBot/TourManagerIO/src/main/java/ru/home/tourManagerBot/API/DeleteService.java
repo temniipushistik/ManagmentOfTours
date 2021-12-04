@@ -17,7 +17,8 @@ public class DeleteService {
         UniqueResponse uniqueResponse;
         //создаем объект, содержит в себе API для запросов(POST|GET|DELETE) к адресу, который укажется ниже
         HttpClient client = HttpClientBuilder.create().build();
-        //мне нужен пост запрос, который будет обращаться к адресу в конструкторе
+
+        // запрос delete, который будет обращаться к адресу в конструкторе
 
 
         HttpDelete delete = new HttpDelete("http://localhost:8080/api/client/delete/"+request.getEmail());

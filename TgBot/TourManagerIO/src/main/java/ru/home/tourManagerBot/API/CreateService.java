@@ -22,7 +22,7 @@ public class CreateService {
         UniqueResponse uniqueResponse;
         //создаем объект, содержит в себе API для запросов(POST|GET|DELETE) к адресу, который укажется ниже
         HttpClient client = HttpClientBuilder.create().build();
-        //мне нужен пост запрос, который будет обращаться к адресу в конструкторе
+        //нужен пост запрос, который будет обращаться к адресу в конструкторе
         HttpPost post = new HttpPost("http://localhost:8080/api/client/create");
         //конвертируем DTO объект, полученный из фронта, в JSON-строку для пересылки на сервер:
         String requestToJSON = new ObjectMapper().writeValueAsString(request);

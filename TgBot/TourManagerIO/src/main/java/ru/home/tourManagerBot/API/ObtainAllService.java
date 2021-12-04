@@ -19,10 +19,10 @@ public class ObtainAllService {
         UniqueResponse uniqueResponse;
 
         HttpClient client = HttpClientBuilder.create().build();
-        //мне нужен пост запрос, который будет обращаться к адресу в конструкторе
+        //гет запрос, который будет обращаться к адресу в конструкторе
 
         HttpGet get = new HttpGet("http://localhost:8080/api/client/obtainAll");
-        //конвертируем DTO объект, полученный из фронта, в JSON-строку для пересылки на сервер:
+
         try {
 
             //выполняем запрос, в рес запишется значения, которые мне вернулись от сервера
