@@ -66,8 +66,9 @@ public class ClientController {
 
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteClient(@RequestBody DeleteClientRequest request) {
+    @DeleteMapping("/delete/{email}")
+    public ResponseEntity<HttpStatus> deleteClient(@PathVariable String email) {
+        DeleteClientRequest request = new DeleteClientRequest(email);
         UniqueResponse serviceResult = service.deleteClient(request);
         ChangeClientResponse resultDTO = (ChangeClientResponse) serviceResult.getDto();
 
@@ -79,8 +80,9 @@ public class ClientController {
 
     }
 
-    @GetMapping("/obtain")
-    public ResponseEntity<HttpStatus> obtainClient(@RequestBody ObtainClientRequest request) {
+    @GetMapping("/obtain/{email}")
+    public ResponseEntity<HttpStatus> obtainClient(@PathVariable String email) {
+        ObtainClientRequest request = new ObtainClientRequest(email);
         UniqueResponse serviceResult = service.obtainClient(request);
         ObtainClientResponse resultDTO = (ObtainClientResponse) serviceResult.getDto();
         if (resultDTO != null) {
@@ -92,7 +94,7 @@ public class ClientController {
     }
 
     @GetMapping("/obtainAll")
-    public ResponseEntity<HttpStatus> obtainAllClients(@RequestBody ObtainAllClientsRequest request) {
+    public ResponseEntity<HttpStatus> obtainAllClients() {
         UniqueResponse serviceResult = service.obtainAllClients();
         ObtainAllClientsResponse resultDTO = (ObtainAllClientsResponse) serviceResult.getDto();
         if (resultDTO != null) {

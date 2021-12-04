@@ -1,10 +1,16 @@
 package ru.home.tourManagerBot.commands;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import ru.home.tourManagerBot.API.CreateService;
 import ru.home.tourManagerBot.BotImplementation;
+import ru.home.tourManagerBot.DTO.request.CreateClientRequest;
+import ru.home.tourManagerBot.DTO.response.CreateClientResponse;
+import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +23,7 @@ public class CreateClient {
 
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
-    public SendMessage run(Update update) {
+    public SendMessage run(Update update) throws JsonProcessingException {
 
         if (update.getMessage().getText().equals("Добавить пользователя")) {
             BotImplementation.setCreate(true);
@@ -116,6 +122,7 @@ public class CreateClient {
             SendMessage sendMessage = new Start().run(update);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("Данные вводимого пользователя удалены");
+            BotImplementation.setCreate(false);
 
             return sendMessage;
 
@@ -164,22 +171,41 @@ public class CreateClient {
     private SendMessage bullshit(Update update) {
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
-        sendMessage.setText("вылетел из цикла, косяк в логике");
+        sendMessage.setText("вылетел из цикла создать пользователя, косяк в логике");
 
         return sendMessage;
 
     }
 
-    private SendMessage finish(Update update) {
-        String textMessage = "Пользователь успешно добавлен:\n";// = client.get("sourceOfTraffic") + "";
-        for (String name : client.keySet()) {
-            textMessage += (name + " : " + client.get(name) + "\n");
-        }
+    private SendMessage finish(Update update) throws JsonProcessingException {
+        String textMessage;
+
+
+        //создаем DTO и заполняем его
+        CreateClientRequest createClientRequest = new CreateClientRequest();
+        createClientRequest.setEmail(client.get("email"));
+        createClientRequest.setUserName(client.get("userName"));
+        createClientRequest.setSourceOfTraffic(client.get("sourceOfTraffic"));
+        createClientRequest.setPhoneNumber(client.get("phoneNumber"));
+        //передаем полученные данные в CreateService и получаем ответ от сервера
+        UniqueResponse uniqueResponse = CreateService.postJSon(createClientRequest);
+
         BotImplementation.setCreate(false);
-        BotImplementation.mainClientBD = client;
-        //String key = name.toString();
-        //  String value = example.get(name).toString();
-        //String textMessage = "Пользователь успешно добавлен ";
+
+
+        if (uniqueResponse.getDto() == null) {
+            //получаем из бэка ответа
+            textMessage = uniqueResponse.getMessage();
+        } else {
+            textMessage = uniqueResponse.getMessage();
+            //получаю объект, который записался в БД из бэка( т.е. часть DTO)
+            CreateClientResponse response = new ObjectMapper().convertValue(uniqueResponse.getDto(), CreateClientResponse.class);
+            //мапим в стринг и добавляем к тексту ответа
+            textMessage +="\n"+new ObjectMapper().writeValueAsString(response);
+
+        }
+
+
         SendMessage sendMessage = new Start().run(update);
         sendMessage.setChatId(update.getMessage().getChatId() + "");
         sendMessage.setText(textMessage);

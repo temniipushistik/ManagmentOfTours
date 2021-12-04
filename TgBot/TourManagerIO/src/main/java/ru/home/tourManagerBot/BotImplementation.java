@@ -1,10 +1,12 @@
 package ru.home.tourManagerBot;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.home.tourManagerBot.commands.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class BotImplementation extends TelegramLongPollingBot {
@@ -109,12 +111,14 @@ public class BotImplementation extends TelegramLongPollingBot {
                     //выводит сообщение введите нужный емейл:
                     execute(new CreateClient().run(update));
                 } else if (text.equals("Удалить пользователя") || delete == true) {
-                    execute((new DeleteClient().run(update)));
+                    execute(new DeleteClient().run(update));
                 }
 
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
 
-            } catch (TelegramApiException e) {
+            } catch (TelegramApiException | JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
