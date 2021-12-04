@@ -15,6 +15,7 @@ import ru.home.tourManagerBot.DTO.response.ObtainClientResponse;
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class ObtainAllClients {
 
@@ -61,7 +62,6 @@ public class ObtainAllClients {
 
 
         ObtainAllClientsRequest obtainAllClientsRequest = new ObtainAllClientsRequest();
-       // obtainClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
 
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = ObtainAllService.postJSon();
@@ -74,7 +74,11 @@ public class ObtainAllClients {
             //получаю объект, который записался в БД из бэка( т.е. часть DTO)
             ObtainClientResponse response = new ObjectMapper().convertValue(uniqueResponse.getDto(), ObtainClientResponse.class);
             //мапим в стринг и добавляем к тексту ответа
-            textMessage += "\n" + new ObjectMapper().writeValueAsString(response);
+
+            for (LinkedHashMap item : (ArrayList<LinkedHashMap>) ((LinkedHashMap) uniqueResponse.getDto()).get("allClients")) {
+                ObtainClientResponse client = new ObjectMapper().convertValue(item, ObtainClientResponse.class);
+                textMessage += "\n" + new ObjectMapper().writeValueAsString(client);
+            }
 
         }
 
