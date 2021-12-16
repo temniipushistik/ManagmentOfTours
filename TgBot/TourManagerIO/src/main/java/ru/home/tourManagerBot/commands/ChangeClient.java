@@ -14,17 +14,21 @@ import ru.home.tourManagerBot.DTO.response.ChangeClientResponse;
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 public class ChangeClient {
     static int flagOfChanging = 0;
     static int sizeOfBD = 0;
+
     //поменять ветку, узнать, что изменилось в клиенте и репозитории
 // changeUser
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
     //получаем update из botImplementation
     public SendMessage run(Update update) throws JsonProcessingException {
-        sizeOfBD = BotImplementation.mainClientBD.size();
+        sizeOfBD = BotImplementation.managerAndClient.size();
 
 
         //if (update.getMessage().getText().equals("Редактировать пользователя") && (sizeOfBD > 0)) {
@@ -34,6 +38,10 @@ public class ChangeClient {
         //  return requestEmail(update);
         //если коллекция пустая:
         if (update.getMessage().getText().equals("Редактировать пользователя") && (sizeOfBD == 0)) {
+            //внутреняя хэшмапа для данных каждого менеджера
+            HashMap<String, String> tempClient = new HashMap<>();
+
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             BotImplementation.setChange(true);
             flagOfChanging = 1;
             // setConfirmationKeyboardMarkup();
@@ -45,7 +53,18 @@ public class ChangeClient {
 
         } else if (flagOfChanging == 1 && (update.getMessage().getText() != null)) {
             String inputMail = update.getMessage().getText();
-            BotImplementation.mainClientBD.put("email", inputMail);
+            if (BotImplementation.managerAndClient.containsKey(update.getMessage().getFrom().getUserName())) {
+
+                HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+                tempClient.put("email", inputMail);
+                BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
+            } else {
+                return bullshit(update);
+
+            }
+            //BotImplementation.mainClientBD.put("email", inputMail);
+
             //   String baseMail = BotImplementation.mainClientBD.get("email");
             //проверяем на наличие в базе
             flagOfChanging = 2;
@@ -60,7 +79,14 @@ public class ChangeClient {
         }
         //имя новое записываем
         else if (flagOfChanging == 2 && (update.getMessage().getText() != null)) {
-            BotImplementation.mainClientBD.put("userName", update.getMessage().getText());
+            // BotImplementation.mainClientBD.put("userName", update.getMessage().getText());
+            //получаю хэшмапу с одним значением(почта)
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            //кладем еще одно значение - юзернейм
+            tempClient.put("userName", update.getMessage().getText());
+            //возвращаем
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -73,13 +99,27 @@ public class ChangeClient {
             return changePhone(update);
         } else if (flagOfChanging == 3 && (update.getMessage().getText() != "Нет, назад")) {
             flagOfChanging--;
-            BotImplementation.mainClientBD.remove("userName");
+
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            //удаляем  одно значение - юзернейм
+            tempClient.remove("userName", update.getMessage().getText());
+            //возвращаем с удаленным полем юзернейм
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             return changeName(update);
         }
 
         //добавляем номер телефона в коллекцию
         else if (flagOfChanging == 4 && (update.getMessage().getText() != null)) {
-            BotImplementation.mainClientBD.put("phoneNumber", update.getMessage().getText());
+
+            if (BotImplementation.managerAndClient.containsKey(update.getMessage().getFrom().getUserName())) {
+
+                HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+                tempClient.put("phoneNumber", update.getMessage().getText());
+                BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+            } else {
+                return bullshit(update);
+            }
+
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -92,7 +132,9 @@ public class ChangeClient {
             return finish(update);
         } else if (flagOfChanging == 5 && (update.getMessage().getText() != "Нет, назад")) {
             flagOfChanging--;
-            BotImplementation.mainClientBD.remove("phoneNumber");
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.remove("phoneNumber", update.getMessage().getText());
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             return changePhone(update);
         } else {
             return bullshit(update);
@@ -114,9 +156,8 @@ public class ChangeClient {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId() + "");
         String textMessage = "Введена почта: \n";
-        for (String name : BotImplementation.mainClientBD.keySet()) {
-            textMessage += (name + " : " + BotImplementation.mainClientBD.get(name) + "\n");
-        }
+        HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+        textMessage += (tempClient.get("email") + "\n");
         textMessage += "Введите новое имя клиента:";
 
         sendMessage.setText(textMessage);
@@ -144,13 +185,13 @@ public class ChangeClient {
         BotImplementation.setChange(false);
 
 
-
         //создаем DTO и заполняем его
         ChangeClientRequest changeClientRequest = new ChangeClientRequest();
-        changeClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
-        changeClientRequest.setUserName(BotImplementation.mainClientBD.get("userName"));
-        changeClientRequest.setPhoneNumber(BotImplementation.mainClientBD.get("phoneNumber"));
-        BotImplementation.mainClientBD.clear();
+        HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+        changeClientRequest.setEmail(tempClient.get("email"));
+        changeClientRequest.setUserName(tempClient.get("userName"));
+        changeClientRequest.setPhoneNumber(tempClient.get("phoneNumber"));
+        BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = ChangeService.postJSon(changeClientRequest);
 

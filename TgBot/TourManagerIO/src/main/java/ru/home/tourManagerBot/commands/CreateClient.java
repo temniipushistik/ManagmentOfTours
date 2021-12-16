@@ -187,6 +187,7 @@ public class CreateClient {
         createClientRequest.setUserName(client.get("userName"));
         createClientRequest.setSourceOfTraffic(client.get("sourceOfTraffic"));
         createClientRequest.setPhoneNumber(client.get("phoneNumber"));
+        BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), client);
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = CreateService.postJSon(createClientRequest);
 

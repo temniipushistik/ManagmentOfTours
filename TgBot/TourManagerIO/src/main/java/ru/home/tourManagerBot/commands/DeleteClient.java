@@ -93,6 +93,7 @@ public class DeleteClient {
         deleteClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
 
         BotImplementation.mainClientBD.clear();
+        BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
         //передаем полученные данные в DeleteService и получаем ответ от сервера
         UniqueResponse uniqueResponse = DeleteService.postJSon(deleteClientRequest);
         textMessage = uniqueResponse.getMessage();
