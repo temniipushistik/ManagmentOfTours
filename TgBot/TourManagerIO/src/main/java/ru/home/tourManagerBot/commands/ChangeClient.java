@@ -20,7 +20,8 @@ import java.util.Map;
 
 public class ChangeClient {
     static int flagOfChanging = 0;
-    static int sizeOfBD = 0;
+    //static int sizeOfBD = 0;
+
 
     //поменять ветку, узнать, что изменилось в клиенте и репозитории
 // changeUser
@@ -28,7 +29,8 @@ public class ChangeClient {
 
     //получаем update из botImplementation
     public SendMessage run(Update update) throws JsonProcessingException {
-        sizeOfBD = BotImplementation.managerAndClient.size();
+
+     //   sizeOfBD = (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())).size();
 
 
         //if (update.getMessage().getText().equals("Редактировать пользователя") && (sizeOfBD > 0)) {
@@ -37,7 +39,7 @@ public class ChangeClient {
         //запрашивает почту
         //  return requestEmail(update);
         //если коллекция пустая:
-        if (update.getMessage().getText().equals("Редактировать пользователя") && (sizeOfBD == 0)) {
+        if (update.getMessage().getText().equals("Редактировать пользователя") && (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())==null)) {
             //внутреняя хэшмапа для данных каждого менеджера
             HashMap<String, String> tempClient = new HashMap<>();
 

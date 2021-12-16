@@ -18,21 +18,27 @@ import java.util.HashMap;
 public class CreateClient {
     //засчет флага двигаемся по циклу добавления нового пользователя
     static int flagOfCreating;
-    static HashMap<String, String> client = new HashMap<>();
+    //static HashMap<String, String> client = new HashMap<>();
 
 
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
     public SendMessage run(Update update) throws JsonProcessingException {
 
+
         if (update.getMessage().getText().equals("Добавить пользователя")) {
             BotImplementation.setCreate(true);
+            HashMap<String, String> tempClient = new HashMap<>();
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             flagOfCreating = 1;
             //запрашивает почту
             return addEmail(update);
             //вводим почту и сохраняем в коллекции
         } else if (flagOfCreating == 1 && update.getMessage().getText() != null) {
-            client.put("email", update.getMessage().getText());
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("email", update.getMessage().getText());
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -55,12 +61,17 @@ public class CreateClient {
             flagOfCreating = 3;
             return addName(update);
         } else if ((flagOfCreating == 2) && (update.getMessage().getText().equals("Нет, назад"))) {
-            client.remove("email");
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.remove("email");
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
             flagOfCreating--;
             return addEmail(update);
 
         } else if (flagOfCreating == 3 && update.getMessage().getText() != null) {
-            client.put("userName", update.getMessage().getText());
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("userName", update.getMessage().getText());
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -77,11 +88,15 @@ public class CreateClient {
 
         } else if (flagOfCreating == 4 && (update.getMessage().getText().equals("Нет, назад"))) {
             flagOfCreating--;
-            client.remove("userName");
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.remove("userName");
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             return addName(update);
 
         } else if (flagOfCreating == 5 && update.getMessage().getText() != null) {
-            client.put("phoneNumber", update.getMessage().getText());
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("phoneNumber", update.getMessage().getText());
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -94,12 +109,17 @@ public class CreateClient {
             return sourceOfTraffic(update);
         } else if (flagOfCreating == 6 && update.getMessage().getText().equals("Нет, назад")) {
             flagOfCreating--;
-            client.remove("phoneNumber");
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.remove("phoneNumber");
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
 
             return addPhone(update);
 
         } else if (flagOfCreating == 7 && update.getMessage().getText() != null) {
-            client.put("sourceOfTraffic", update.getMessage().getText());
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("sourceOfTraffic", update.getMessage().getText());
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             setConfirmationKeyboardMarkup();
             SendMessage sendMessage = new SendMessage();
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
@@ -112,12 +132,17 @@ public class CreateClient {
             flagOfCreating = 9;
             return finish(update);
         } else if (flagOfCreating == 8 && update.getMessage().getText().equals("Нет, назад")) {
-            client.remove("sourceOfTraffic");
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.remove("sourceOfTraffic");
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
             flagOfCreating--;
             return finish(update);
 
         } else if (update.getMessage().getText().equals("в главное меню")) {
-            client.clear();
+            HashMap<String, String> tempClient=BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.clear();
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(),tempClient);
             //удалить пользователя
             SendMessage sendMessage = new Start().run(update);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
@@ -183,11 +208,12 @@ public class CreateClient {
 
         //создаем DTO и заполняем его
         CreateClientRequest createClientRequest = new CreateClientRequest();
-        createClientRequest.setEmail(client.get("email"));
-        createClientRequest.setUserName(client.get("userName"));
-        createClientRequest.setSourceOfTraffic(client.get("sourceOfTraffic"));
-        createClientRequest.setPhoneNumber(client.get("phoneNumber"));
-        BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), client);
+        HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+        createClientRequest.setEmail(tempClient.get("email"));
+        createClientRequest.setUserName(tempClient.get("userName"));
+        createClientRequest.setSourceOfTraffic(tempClient.get("sourceOfTraffic"));
+        createClientRequest.setPhoneNumber(tempClient.get("phoneNumber"));
+        BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = CreateService.postJSon(createClientRequest);
 
@@ -202,7 +228,7 @@ public class CreateClient {
             //получаю объект, который записался в БД из бэка( т.е. часть DTO)
             CreateClientResponse response = new ObjectMapper().convertValue(uniqueResponse.getDto(), CreateClientResponse.class);
             //мапим в стринг и добавляем к тексту ответа
-            textMessage +="\n"+new ObjectMapper().writeValueAsString(response);
+            textMessage += "\n" + new ObjectMapper().writeValueAsString(response);
 
         }
 
