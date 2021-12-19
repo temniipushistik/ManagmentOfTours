@@ -36,7 +36,9 @@ public class DeleteClient {
             HashMap<String, String> tempClient = new HashMap<>();
             //размещаем эту запись в основную хэшмапу
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
-            BotImplementation.setDelete(true);
+            Integer flag = 3;//флаг говорит о том, что мы сейчас удалении пользователя
+            //-1 - пустой флаг, 0 - create, 1- change, 2- obtain, 3 - delete
+            BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
             flagOfDeleting = 1;
             //запрашивает почту
             return deleteByEmail(update);
@@ -48,19 +50,6 @@ public class DeleteClient {
             tempClient.put("email", inputMail);
             return finish(update);
 
-            /*String baseMail = BotImplementation.mainClientBD.get("email");
-            //проверяем на наличие в базе
-            if (inputMail.equals(baseMail)) {
-                BotImplementation.mainClientBD.clear();
-
-                return finish(update);
-            } else {
-                setConfirmationKeyboardMarkup();
-                SendMessage sendMessage = new Start().run(update);
-                sendMessage.setChatId(update.getMessage().getChatId() + "");
-                sendMessage.setText("такой почты нет. Попробуйте снова");
-                return sendMessage;
-            } */
         } else {
 
             return bullshit(update);
@@ -89,8 +78,9 @@ public class DeleteClient {
         DeleteClientRequest deleteClientRequest = new DeleteClientRequest();
         HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
         deleteClientRequest.setEmail(tempClient.get("email"));
-
         BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
+        Integer flag = -1;//флаг говорит о том, что мы сейчас мы всё сделали, можно возвращаться
+        BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
 
         //передаем полученные данные в DeleteService и получаем ответ от сервера
         UniqueResponse uniqueResponse = DeleteService.postJSon(deleteClientRequest);

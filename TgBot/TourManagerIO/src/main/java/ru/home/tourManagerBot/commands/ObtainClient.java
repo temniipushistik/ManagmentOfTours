@@ -29,6 +29,10 @@ public class ObtainClient {
         if (update.getMessage().getText().equals("Получить пользователя") && (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName()) == null)) {
             //создаем пустую запись для данного пользователя
             HashMap<String, String> tempClient = new HashMap<>();
+            Integer flag = 2;//флаг говорит о том, что мы сейчас удалении пользователя
+            //-1 - пустой флаг, 0 - create, 1- change, 2- obtain, 3 - delete
+            BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
+            ;
             //размещаем эту запись в основную хэшмапу
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             BotImplementation.setObtain(true);
@@ -73,10 +77,10 @@ public class ObtainClient {
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
 
-        BotImplementation.setObtain(false);
+        Integer flag = -1;//флаг говорит о том, что мы сейчас мы всё сделали, можно возвращаться
+        BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
 
         ObtainClientRequest obtainClientRequest = new ObtainClientRequest();
-
         HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
         obtainClientRequest.setEmail(tempClient.get("email"));
         BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());

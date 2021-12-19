@@ -30,26 +30,17 @@ public class ChangeClient {
     //получаем update из botImplementation
     public SendMessage run(Update update) throws JsonProcessingException {
 
-     //   sizeOfBD = (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())).size();
-
-
-        //if (update.getMessage().getText().equals("Редактировать пользователя") && (sizeOfBD > 0)) {
-        //    BotImplementation.setChange(true);
-        //    flagOfChanging = 1;
-        //запрашивает почту
-        //  return requestEmail(update);
-        //если коллекция пустая:
-        if (update.getMessage().getText().equals("Редактировать пользователя") && (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())==null)) {
+        //  если коллекция пустая:
+        if (update.getMessage().getText().equals("Редактировать пользователя") && (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName()) == null)) {
             //внутреняя хэшмапа для данных каждого менеджера
             HashMap<String, String> tempClient = new HashMap<>();
-
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
-            BotImplementation.setChange(true);
+            Integer flag = 1;//флаг говорит о том, что мы сейчас редактируем пользователя
+
+            BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
+
             flagOfChanging = 1;
-            // setConfirmationKeyboardMarkup();
-            // SendMessage sendMessage = new Start().run(update);
-            //sendMessage.setChatId(update.getMessage().getChatId() + "");
-            //sendMessage.setText("В базе ничего нет. Чтобы что-то отредактировать нужно сначала что-то создать");
+
             return requestEmail(update);
 
 
@@ -65,19 +56,10 @@ public class ChangeClient {
                 return bullshit(update);
 
             }
-            //BotImplementation.mainClientBD.put("email", inputMail);
 
-            //   String baseMail = BotImplementation.mainClientBD.get("email");
             //проверяем на наличие в базе
             flagOfChanging = 2;
             return changeName(update);
-            /*} else {
-                setConfirmationKeyboardMarkup();
-                SendMessage sendMessage = new Start().run(update);
-                sendMessage.setChatId(update.getMessage().getChatId() + "");
-                sendMessage.setText("такой почты нет. Попробуйте снова");
-                return sendMessage;
-            }*/
         }
         //имя новое записываем
         else if (flagOfChanging == 2 && (update.getMessage().getText() != null)) {
@@ -184,7 +166,11 @@ public class ChangeClient {
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
 
-        BotImplementation.setChange(false);
+        Integer flag = -1;//флаг говорит о том, что мы сейчас поменяли пользователя, можно возвращаться
+
+        BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
+
+        // BotImplementation.setChange(false);
 
 
         //создаем DTO и заполняем его

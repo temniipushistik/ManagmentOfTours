@@ -27,9 +27,10 @@ public class CreateClient {
 
 
         if (update.getMessage().getText().equals("Добавить пользователя")) {
-            BotImplementation.setCreate(true);
             HashMap<String, String> tempClient = new HashMap<>();
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+            Integer flag = 0;//флаг говорит о том, что мы сейчас создаем пользователя
+            BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
             flagOfCreating = 1;
             //запрашивает почту
             return addEmail(update);
@@ -140,9 +141,9 @@ public class CreateClient {
             return finish(update);
 
         } else if (update.getMessage().getText().equals("в главное меню")) {
-            HashMap<String, String> tempClient=BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
             tempClient.clear();
-            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(),tempClient);
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             //удалить пользователя
             SendMessage sendMessage = new Start().run(update);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
@@ -216,8 +217,8 @@ public class CreateClient {
         BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = CreateService.postJSon(createClientRequest);
-
-        BotImplementation.setCreate(false);
+        Integer flag = -1;//флаг говорит о том, что мы закончили, можно возвращаться
+        BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
 
 
         if (uniqueResponse.getDto() == null) {

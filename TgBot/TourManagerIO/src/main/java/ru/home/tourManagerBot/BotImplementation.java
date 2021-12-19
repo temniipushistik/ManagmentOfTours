@@ -23,8 +23,6 @@ public class BotImplementation extends TelegramLongPollingBot {
     public void setManagerName(String managerName) {
         this.managerName = managerName;
     }
-//static HashMap<String, String> client = new HashMap<>();
-
 
     public static void setCreate(boolean create) {
         BotImplementation.create = create;
@@ -63,60 +61,46 @@ public class BotImplementation extends TelegramLongPollingBot {
     //создаем клавиатуру:
     // ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     private long chat_id;
-
-
     //создаем мапу для хранения полученных данных. В стринг - @имя, массив эррея - данные об этом
     //пользователе
-
-    // public static HashMap<String, String> mainClientBD = new HashMap<>();
-    public static HashMap<String, HashMap<String,String>> managerAndClient = new HashMap<>();
-
-
-
-
-
-
-    public long getChat_id() {
-        return chat_id;
-    }
+    public static HashMap<String, HashMap<String, String>> managerAndClient = new HashMap<>();
+    //создаем хэшмапу с флагами для каждого менеджера тура
+    public static HashMap<String, Integer> flags = new HashMap<>();
+    //-1 - пустой флаг, 0 - create, 1- change, 2- obtain, 3 - delete
 
     public String getBotUsername() {
         return USERNAME;
     }
 
-
     public String getBotToken() {
         return TOKEN;
     }
 
-
     //этот метод вызывается !!!каждый раз!!! когда пользователь отправляет сообщение и всё сначала
     //жопа с тем, что каждый раз мы заново проверяем
     public void onUpdateReceived(Update update) {
+
         if (update.getMessage() != null && update.getMessage().hasText()) {
             chat_id = update.getMessage().getChatId();
             setManagerName(update.getMessage().getFrom().getUserName());
             //получаем ник пользователя
-
-
             String text = update.getMessage().getText();
             try {
                 if (text.equals("/start")) {
                     execute(new Start().run(update));
-
-                } else if (text.equals("Получить пользователя") || (obtain == true)) {
+                } else if (text.equals("Добавить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 0)) {
+                    //выводит сообщение введите нужный емейл:
+                    execute(new CreateClient().run(update));
+                } else if (text.equals("Редактировать пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 1)) {
+                    execute(new ChangeClient().run(update));
+                } else if (text.equals("Получить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 2)) {
                     execute((new ObtainClient().run(update)));
+                } else if (text.equals("Удалить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 3)) {
+                    execute(new DeleteClient().run(update));
                 } else if (text.equals("Получить всех пользователей")) {
                     execute((new ObtainAllClients().run(update)));
 
 
-                } else if (text.equals("Редактировать пользователя") || (change == true)) {
-                    execute(new ChangeClient().run(update));
-                } else if (text.equals("Добавить пользователя") || (create == true)) {
-                    //выводит сообщение введите нужный емейл:
-                    execute(new CreateClient().run(update));
-                } else if (text.equals("Удалить пользователя") || delete == true) {
-                    execute(new DeleteClient().run(update));
                 }
 
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
