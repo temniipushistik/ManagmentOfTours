@@ -16,10 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CreateClient {
-    //засчет флага двигаемся по циклу добавления нового пользователя
-    static int flagOfCreating;
-    //static HashMap<String, String> client = new HashMap<>();
-
 
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
@@ -243,7 +239,7 @@ public class CreateClient {
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = CreateService.postJSon(createClientRequest);
         Integer flag = -1;//флаг говорит о том, что мы закончили, можно возвращаться
-        BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
+        BotImplementation.flags.remove(update.getMessage().getFrom().getUserName());
         BotImplementation.steps.remove(update.getMessage().getFrom().getUserName());
 
 

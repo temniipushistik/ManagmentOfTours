@@ -36,15 +36,15 @@ public class ChangeClient {
             HashMap<String, String> tempClient = new HashMap<>();
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             Integer flag = 1;//флаг говорит о том, что мы сейчас редактируем пользователя
-
             BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
-
-            flagOfChanging = 1;
+            Integer step = 1;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+            //flagOfChanging = 1;
 
             return requestEmail(update);
 
 
-        } else if (flagOfChanging == 1 && (update.getMessage().getText() != null)) {
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 1 && (update.getMessage().getText() != null)) {
             String inputMail = update.getMessage().getText();
             if (BotImplementation.managerAndClient.containsKey(update.getMessage().getFrom().getUserName())) {
 
@@ -58,11 +58,13 @@ public class ChangeClient {
             }
 
             //проверяем на наличие в базе
-            flagOfChanging = 2;
+            Integer step = 2;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+           // flagOfChanging = 2;
             return changeName(update);
         }
         //имя новое записываем
-        else if (flagOfChanging == 2 && (update.getMessage().getText() != null)) {
+        else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())  == 2 && (update.getMessage().getText() != null)) {
             // BotImplementation.mainClientBD.put("userName", update.getMessage().getText());
             //получаю хэшмапу с одним значением(почта)
             HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
@@ -76,13 +78,18 @@ public class ChangeClient {
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("откорректированное имя корректно?");
-            flagOfChanging = 3;
+            Integer step = 3;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+            //flagOfChanging = 3;
             return sendMessage;
-        } else if (flagOfChanging == 3 && (update.getMessage().getText() != "Да, далее")) {
-            flagOfChanging = 4;
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())  == 3 && (update.getMessage().getText() != "Да, далее")) {
+            Integer step = 4;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             return changePhone(update);
         } else if (flagOfChanging == 3 && (update.getMessage().getText() != "Нет, назад")) {
-            flagOfChanging--;
+            Integer step = 2;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+           // flagOfChanging--;
 
             HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
             //удаляем  одно значение - юзернейм
@@ -93,7 +100,7 @@ public class ChangeClient {
         }
 
         //добавляем номер телефона в коллекцию
-        else if (flagOfChanging == 4 && (update.getMessage().getText() != null)) {
+        else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())  == 4 && (update.getMessage().getText() != null)) {
 
             if (BotImplementation.managerAndClient.containsKey(update.getMessage().getFrom().getUserName())) {
 
@@ -109,13 +116,19 @@ public class ChangeClient {
             sendMessage.setReplyMarkup(replyKeyboardMarkup);
             sendMessage.setChatId(update.getMessage().getChatId() + "");
             sendMessage.setText("откорректированный телефон корректен?");
-            flagOfChanging = 5;
+            //flagOfChanging = 5;
+            Integer step = 5;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             return sendMessage;
-        } else if (flagOfChanging == 5 && (update.getMessage().getText() != "Да, далее")) {
-            flagOfChanging = 6;
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && (update.getMessage().getText() != "Да, далее")) {
+            Integer step = 6;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+         //   flagOfChanging = 6;
             return finish(update);
-        } else if (flagOfChanging == 5 && (update.getMessage().getText() != "Нет, назад")) {
-            flagOfChanging--;
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && (update.getMessage().getText() != "Нет, назад")) {
+            Integer step = 4;
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+          //  flagOfChanging--;
             HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
             tempClient.remove("phoneNumber", update.getMessage().getText());
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);

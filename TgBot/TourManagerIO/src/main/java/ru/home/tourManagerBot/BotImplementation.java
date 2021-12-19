@@ -50,7 +50,7 @@ public class BotImplementation extends TelegramLongPollingBot {
                 } else if (text.equals("Добавить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 0)) {
                     //выводит сообщение введите нужный емейл:
                     execute(new CreateClient().run(update));
-                } else if (text.equals("Редактировать пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 1)) {
+                } else if ((text.equals("Редактировать пользователя") && (flags.get(update.getMessage().getFrom().getUserName()) == null)) || (flags.get(update.getMessage().getFrom().getUserName()) == 1)) {
                     execute(new ChangeClient().run(update));
                 } else if (text.equals("Получить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 2)) {
                     execute((new ObtainClient().run(update)));
