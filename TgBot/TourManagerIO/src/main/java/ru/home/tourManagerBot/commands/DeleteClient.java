@@ -32,6 +32,10 @@ public class DeleteClient {
 
 
         if (update.getMessage().getText().equals("Удалить пользователя")&&(BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())==null)) {
+           //создаем пустую запись для данного пользователя
+            HashMap<String, String> tempClient = new HashMap<>();
+            //размещаем эту запись в основную хэшмапу
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             BotImplementation.setDelete(true);
             flagOfDeleting = 1;
             //запрашивает почту

@@ -16,6 +16,7 @@ import ru.home.tourManagerBot.DTO.response.ObtainClientResponse;
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ObtainClient {
     static int flagOfObtaining = 0;
@@ -23,26 +24,26 @@ public class ObtainClient {
     private ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
     public SendMessage run(Update update) throws JsonProcessingException {
-        sizeOfBD = BotImplementation.mainClientBD.size();
+        //    sizeOfBD = BotImplementation.mainClientBD.size();
 
-        if (update.getMessage().getText().equals("Получить пользователя") && (sizeOfBD > 0)) {
+        if (update.getMessage().getText().equals("Получить пользователя") && (BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName()) == null)) {
+            //создаем пустую запись для данного пользователя
+            HashMap<String, String> tempClient = new HashMap<>();
+            //размещаем эту запись в основную хэшмапу
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             BotImplementation.setObtain(true);
             flagOfObtaining = 1;
 
             //запрашивает почту
             return inputEmail(update);
 
-        } else if (update.getMessage().getText().equals("Получить пользователя") && (sizeOfBD == 0)) {
-
-            BotImplementation.setObtain(true);
-            flagOfObtaining = 1;
-
-            return inputEmail(update);
-
 
         } else if ((flagOfObtaining == 1) && (update.getMessage().getText() != null)) {
             String inputMail = update.getMessage().getText();
-            BotImplementation.mainClientBD.put("email", inputMail);
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("email", inputMail);
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+
 
             return finish(update);
 
@@ -75,8 +76,10 @@ public class ObtainClient {
         BotImplementation.setObtain(false);
 
         ObtainClientRequest obtainClientRequest = new ObtainClientRequest();
-        obtainClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
 
+        HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+        obtainClientRequest.setEmail(tempClient.get("email"));
+        BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
         //передаем полученные данные в CreateService и получаем ответ от сервера
         UniqueResponse uniqueResponse = ObtainService.postJSon(obtainClientRequest);
 

@@ -22,7 +22,7 @@ public class ObtainAllClients {
     static int sizeOfBD = 0;
 
     public SendMessage run(Update update) throws JsonProcessingException {
-        sizeOfBD = BotImplementation.mainClientBD.size();
+        //sizeOfBD = BotImplementation.mainClientBD.size();
 
         if (update.getMessage().getText().equals("Получить всех пользователей") && (sizeOfBD != 0)) {
 
