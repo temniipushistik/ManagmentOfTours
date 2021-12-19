@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class BotImplementation extends TelegramLongPollingBot {
     // old private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
-    private static final String TOKEN = "";
+    private static final String TOKEN = "2067787448:AAGO1pLywCQ6tJHO-wif2aUqQQfqG8c7SxU";
     private static final String USERNAME = "Tour_ManagerBot";
     //private String userName;
     private String managerName;
@@ -47,19 +47,17 @@ public class BotImplementation extends TelegramLongPollingBot {
             try {
                 if (text.equals("/start")) {
                     execute(new Start().run(update));
-                } else if (text.equals("Добавить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 0)) {
+                } else if (text.equals("Добавить пользователя") || ( flags.get(update.getMessage().getFrom().getUserName()) != null && flags.get(update.getMessage().getFrom().getUserName()) == 0)) {
                     //выводит сообщение введите нужный емейл:
                     execute(new CreateClient().run(update));
-                } else if ((text.equals("Редактировать пользователя") && (flags.get(update.getMessage().getFrom().getUserName()) == null)) || (flags.get(update.getMessage().getFrom().getUserName()) == 1)) {
+                } else if ((text.equals("Редактировать пользователя")) || (flags.get(update.getMessage().getFrom().getUserName()) != null && flags.get(update.getMessage().getFrom().getUserName()) == 1)) {
                     execute(new ChangeClient().run(update));
-                } else if (text.equals("Получить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 2)) {
+                } else if (text.equals("Получить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) != null && flags.get(update.getMessage().getFrom().getUserName()) == 2)) {
                     execute((new ObtainClient().run(update)));
-                } else if (text.equals("Удалить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) == 3)) {
+                } else if (text.equals("Удалить пользователя") || (flags.get(update.getMessage().getFrom().getUserName()) != null && flags.get(update.getMessage().getFrom().getUserName()) == 3)) {
                     execute(new DeleteClient().run(update));
                 } else if (text.equals("Получить всех пользователей")) {
                     execute((new ObtainAllClients().run(update)));
-
-
                 }
 
 //если нажато добавить пользователя или в хэшмапе есть значение и в этом значении(эррейлисте) первое значение "добавить пользователя"
