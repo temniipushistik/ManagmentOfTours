@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class BotImplementation extends TelegramLongPollingBot {
     // old private static final String TOKEN = "2067787448:AAEsIUyOxkUGdB4SrRn0aJHprr3IsjzwUOk";
-    private static final String TOKEN = "2067787448:AAGO1pLywCQ6tJHO-wif2aUqQQfqG8c7SxU";
+    private static final String TOKEN = "";
     private static final String USERNAME = "Tour_ManagerBot";
     //private String userName;
     private String managerName;
@@ -68,7 +68,7 @@ public class BotImplementation extends TelegramLongPollingBot {
     //создаем мапу для хранения полученных данных. В стринг - @имя, массив эррея - данные об этом
     //пользователе
 
-   public static HashMap<String, String> mainClientBD = new HashMap<>();
+    // public static HashMap<String, String> mainClientBD = new HashMap<>();
     public static HashMap<String, HashMap<String,String>> managerAndClient = new HashMap<>();
 
 

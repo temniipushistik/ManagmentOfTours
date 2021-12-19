@@ -16,6 +16,7 @@ import ru.home.tourManagerBot.DTO.response.ChangeClientResponse;
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DeleteClient {
     static int flagOfDeleting = 0;
@@ -26,29 +27,21 @@ public class DeleteClient {
 
     //получаем update из botImplementation
     public SendMessage run(Update update) throws JsonProcessingException {
-        sizeOfBD = BotImplementation.mainClientBD.size();
+        //sizeOfBD = BotImplementation.mainClientBD.size();
 
-        if (update.getMessage().getText().equals("Удалить пользователя") && (sizeOfBD > 0)) {
+
+
+        if (update.getMessage().getText().equals("Удалить пользователя")&&(BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())==null)) {
             BotImplementation.setDelete(true);
             flagOfDeleting = 1;
             //запрашивает почту
             return deleteByEmail(update);
             //если коллекция пустая:
-        } else if (update.getMessage().getText().equals("Удалить пользователя") && (sizeOfBD == 0)) {
-            /*setConfirmationKeyboardMarkup();
-            SendMessage sendMessage = new Start().run(update);
-            sendMessage.setChatId(update.getMessage().getChatId() + "");
-            sendMessage.setText("В базе ничего нет. Чтобы что-то удалить нужно сначала что-то создать");
-            return sendMessage;*/
-            BotImplementation.setDelete(true);
-            flagOfDeleting = 1;
-            //запрашивает почту
-            return deleteByEmail(update);
-
 
         } else if (flagOfDeleting == 1 && (update.getMessage().getText() != null)) {
             String inputMail = update.getMessage().getText();
-            BotImplementation.mainClientBD.put("email", inputMail);
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("email", inputMail);
             return finish(update);
 
             /*String baseMail = BotImplementation.mainClientBD.get("email");
@@ -90,10 +83,11 @@ public class DeleteClient {
         String textMessage;
         BotImplementation.setDelete(false);
         DeleteClientRequest deleteClientRequest = new DeleteClientRequest();
-        deleteClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
+        HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+        deleteClientRequest.setEmail(tempClient.get("email"));
 
-        BotImplementation.mainClientBD.clear();
         BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
+
         //передаем полученные данные в DeleteService и получаем ответ от сервера
         UniqueResponse uniqueResponse = DeleteService.postJSon(deleteClientRequest);
         textMessage = uniqueResponse.getMessage();
