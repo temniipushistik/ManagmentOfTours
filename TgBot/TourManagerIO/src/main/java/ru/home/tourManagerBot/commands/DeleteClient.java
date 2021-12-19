@@ -16,6 +16,7 @@ import ru.home.tourManagerBot.DTO.response.ChangeClientResponse;
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DeleteClient {
     static int flagOfDeleting = 0;
@@ -26,44 +27,29 @@ public class DeleteClient {
 
     //получаем update из botImplementation
     public SendMessage run(Update update) throws JsonProcessingException {
-        sizeOfBD = BotImplementation.mainClientBD.size();
+        //sizeOfBD = BotImplementation.mainClientBD.size();
 
-        if (update.getMessage().getText().equals("Удалить пользователя") && (sizeOfBD > 0)) {
-            BotImplementation.setDelete(true);
+
+
+        if (update.getMessage().getText().equals("Удалить пользователя")&&(BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName())==null)) {
+           //создаем пустую запись для данного пользователя
+            HashMap<String, String> tempClient = new HashMap<>();
+            //размещаем эту запись в основную хэшмапу
+            BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+            Integer flag = 3;//флаг говорит о том, что мы сейчас удалении пользователя
+            //-1 - пустой флаг, 0 - create, 1- change, 2- obtain, 3 - delete
+            BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
             flagOfDeleting = 1;
             //запрашивает почту
             return deleteByEmail(update);
             //если коллекция пустая:
-        } else if (update.getMessage().getText().equals("Удалить пользователя") && (sizeOfBD == 0)) {
-            /*setConfirmationKeyboardMarkup();
-            SendMessage sendMessage = new Start().run(update);
-            sendMessage.setChatId(update.getMessage().getChatId() + "");
-            sendMessage.setText("В базе ничего нет. Чтобы что-то удалить нужно сначала что-то создать");
-            return sendMessage;*/
-            BotImplementation.setDelete(true);
-            flagOfDeleting = 1;
-            //запрашивает почту
-            return deleteByEmail(update);
-
 
         } else if (flagOfDeleting == 1 && (update.getMessage().getText() != null)) {
             String inputMail = update.getMessage().getText();
-            BotImplementation.mainClientBD.put("email", inputMail);
+            HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+            tempClient.put("email", inputMail);
             return finish(update);
 
-            /*String baseMail = BotImplementation.mainClientBD.get("email");
-            //проверяем на наличие в базе
-            if (inputMail.equals(baseMail)) {
-                BotImplementation.mainClientBD.clear();
-
-                return finish(update);
-            } else {
-                setConfirmationKeyboardMarkup();
-                SendMessage sendMessage = new Start().run(update);
-                sendMessage.setChatId(update.getMessage().getChatId() + "");
-                sendMessage.setText("такой почты нет. Попробуйте снова");
-                return sendMessage;
-            } */
         } else {
 
             return bullshit(update);
@@ -88,11 +74,14 @@ public class DeleteClient {
     //завершаем и выводим данные
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
-        BotImplementation.setDelete(false);
-        DeleteClientRequest deleteClientRequest = new DeleteClientRequest();
-        deleteClientRequest.setEmail(BotImplementation.mainClientBD.get("email"));
 
-        BotImplementation.mainClientBD.clear();
+        DeleteClientRequest deleteClientRequest = new DeleteClientRequest();
+        HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
+        deleteClientRequest.setEmail(tempClient.get("email"));
+        BotImplementation.managerAndClient.remove(update.getMessage().getFrom().getUserName());
+        Integer flag = -1;//флаг говорит о том, что мы сейчас мы всё сделали, можно возвращаться
+        BotImplementation.flags.put(update.getMessage().getFrom().getUserName(), flag);
+
         //передаем полученные данные в DeleteService и получаем ответ от сервера
         UniqueResponse uniqueResponse = DeleteService.postJSon(deleteClientRequest);
         textMessage = uniqueResponse.getMessage();
