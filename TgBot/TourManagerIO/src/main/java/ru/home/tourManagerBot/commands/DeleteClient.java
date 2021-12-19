@@ -74,7 +74,7 @@ public class DeleteClient {
     //завершаем и выводим данные
     private SendMessage finish(Update update) throws JsonProcessingException {
         String textMessage;
-        BotImplementation.setDelete(false);
+
         DeleteClientRequest deleteClientRequest = new DeleteClientRequest();
         HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
         deleteClientRequest.setEmail(tempClient.get("email"));

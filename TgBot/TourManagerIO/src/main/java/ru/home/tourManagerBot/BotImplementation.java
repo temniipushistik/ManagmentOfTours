@@ -16,57 +16,17 @@ public class BotImplementation extends TelegramLongPollingBot {
     //private String userName;
     private String managerName;
 
-    public String getManagerName() {
-        return managerName;
-    }
-
     public void setManagerName(String managerName) {
         this.managerName = managerName;
     }
 
-    public static void setCreate(boolean create) {
-        BotImplementation.create = create;
-    }
-
-    //статусы для операций
-    private static boolean create = false;
-    private static boolean change = false;
-    private static boolean obtain = false;
-    private static boolean delete = false;
-
-    public static boolean isDelete() {
-        return delete;
-    }
-
-    public static void setDelete(boolean delete) {
-        BotImplementation.delete = delete;
-    }
-
-    public static boolean isObtain() {
-        return obtain;
-    }
-
-    public static void setObtain(boolean obtain) {
-        BotImplementation.obtain = obtain;
-    }
-
-    public static boolean isChange() {
-        return change;
-    }
-
-    public static void setChange(boolean change) {
-        BotImplementation.change = change;
-    }
-
-    //создаем клавиатуру:
-    // ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-    private long chat_id;
     //создаем мапу для хранения полученных данных. В стринг - @имя, массив эррея - данные об этом
     //пользователе
     public static HashMap<String, HashMap<String, String>> managerAndClient = new HashMap<>();
     //создаем хэшмапу с флагами для каждого менеджера тура
-    public static HashMap<String, Integer> flags = new HashMap<>();
-    //-1 - пустой флаг, 0 - create, 1- change, 2- obtain, 3 - delete
+    public static HashMap<String, Integer> flags = new HashMap<>();//-1 - пустой флаг, 0 - create, 1- change, 2- obtain, 3 - delete
+
+    public static HashMap<String, Integer> steps = new HashMap<>();//номера шагов внутри флагов создать, редактировать и пр
 
     public String getBotUsername() {
         return USERNAME;
@@ -81,7 +41,6 @@ public class BotImplementation extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         if (update.getMessage() != null && update.getMessage().hasText()) {
-            chat_id = update.getMessage().getChatId();
             setManagerName(update.getMessage().getFrom().getUserName());
             //получаем ник пользователя
             String text = update.getMessage().getText();

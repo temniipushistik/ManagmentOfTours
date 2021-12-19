@@ -35,7 +35,7 @@ public class ObtainClient {
             ;
             //размещаем эту запись в основную хэшмапу
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
-            BotImplementation.setObtain(true);
+
             flagOfObtaining = 1;
 
             //запрашивает почту
