@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/connection")
 
-public class ConnectionController {
+public class    ConnectionController {
     //obtain responses via GET
     @GetMapping("check")
     public ResponseEntity<HttpStatus> check() {

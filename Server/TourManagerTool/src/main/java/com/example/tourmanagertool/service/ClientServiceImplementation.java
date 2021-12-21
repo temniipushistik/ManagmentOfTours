@@ -1,5 +1,6 @@
 package com.example.tourmanagertool.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.example.tourmanagertool.DTO.request.ChangeClientRequest;
@@ -117,6 +118,7 @@ public class ClientServiceImplementation implements ClientService {
             response = new UniqueResponse("Клиента с такой почтой не существует", null);
         } else {
             EntityTour requestedClient = resultSearchByEmail.get(0);
+
             ObtainClientResponse obtainDTOFromEntity = modelMapper.map(requestedClient, ObtainClientResponse.class);
             //отправляем это на фронт
             response = new UniqueResponse("Информация о запрошенном пользователе: ", obtainDTOFromEntity);
@@ -135,9 +137,9 @@ public class ClientServiceImplementation implements ClientService {
         if (findAllClients.size() == 0) {
             response = new UniqueResponse("Клиентов нет, сначала собери клиентов", null);
         } else {
-            //создаем список, такой же как и в репозитории:
-            List<ObtainClientResponse> obtainClientListDTOFromEntity = modelMapper.map(findAllClients, List.class);
-            //создаем объект, который будем передавать в фронт
+            //создаем список, такой же как и в репозитории, конвертим в массив и далее в список, иначе он криво конвертит
+            List<ObtainClientResponse> obtainClientListDTOFromEntity = Arrays.asList(modelMapper.map(findAllClients, ObtainClientResponse[].class));
+           //создаем объект, который будем передавать в фронт
             ObtainAllClientsResponse obtainAllDTOFromEntity = new ObtainAllClientsResponse();
             //и заполняем поля через сетерп
             obtainAllDTOFromEntity.setAllClients(obtainClientListDTOFromEntity);
