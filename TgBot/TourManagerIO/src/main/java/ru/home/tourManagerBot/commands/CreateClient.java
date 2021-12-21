@@ -93,13 +93,14 @@ public class CreateClient {
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             return addPhone(update);
 
-        } else if (BotImplementation.flags.get(update.getMessage().getFrom().getUserName())== 4 && (update.getMessage().getText().equals("Нет, назад"))) {
-            Integer step = 3;
-            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
-            //  flagOfCreating--;
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())== 4 && (update.getMessage().getText().equals("Нет, назад"))) {
+                       //  flagOfCreating--;
             HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
             tempClient.remove("userName");
+            Integer step = 3;
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
+            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+
             return addName(update);
 
         } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && update.getMessage().getText() != null) {
@@ -151,7 +152,7 @@ public class CreateClient {
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             // flagOfCreating = 9;
             return finish(update);
-        } else if (BotImplementation.flags.get(update.getMessage().getFrom().getUserName()) == 8 && update.getMessage().getText().equals("Нет, назад")) {
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 8 && update.getMessage().getText().equals("Нет, назад")) {
 
             HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
             tempClient.remove("sourceOfTraffic");
@@ -159,7 +160,7 @@ public class CreateClient {
             Integer step = 7;
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             //flagOfCreating--;
-            return finish(update);
+            return sourceOfTraffic(update);
 
         } else if (update.getMessage().getText().equals("в главное меню")) {
             HashMap<String, String> tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());

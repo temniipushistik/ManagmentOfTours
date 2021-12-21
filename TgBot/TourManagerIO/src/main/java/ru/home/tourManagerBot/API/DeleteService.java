@@ -7,21 +7,42 @@ import org.apache.http.client.HttpClient;
 
 import org.apache.http.client.methods.HttpDelete;
 
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import ru.home.tourManagerBot.DTO.request.DeleteClientRequest;
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
+
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 public class DeleteService {
     public static UniqueResponse postJSon(DeleteClientRequest request) throws JsonProcessingException {
         UniqueResponse uniqueResponse;
         //создаем объект, содержит в себе API для запросов(POST|GET|DELETE) к адресу, который укажется ниже
-        HttpClient client = HttpClientBuilder.create().build();
+       // HttpClient client = HttpClientBuilder.create().build();
 
         // запрос delete, который будет обращаться к адресу в конструкторе
+        HttpClient client=null;
+        try {
+            client = HttpClients
+                    .custom()
+                    .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
 
-
-        HttpDelete delete = new HttpDelete("http://localhost:8080/api/client/delete/"+request.getEmail());
+        HttpDelete delete = new HttpDelete("https://localhost:8443/api/client/delete/"+request.getEmail());
 
         try {
 

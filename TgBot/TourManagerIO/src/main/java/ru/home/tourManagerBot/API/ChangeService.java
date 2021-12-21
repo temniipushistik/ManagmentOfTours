@@ -5,20 +5,42 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import ru.home.tourManagerBot.DTO.request.ChangeClientRequest;
 
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
 public class ChangeService {
+
     public static UniqueResponse postJSon(ChangeClientRequest request) throws JsonProcessingException {
         UniqueResponse uniqueResponse;
-
-        HttpClient client = HttpClientBuilder.create().build();
+        //HttpClient client = HttpClientBuilder.create().build();
+        HttpClient client=null;
+        try {
+            client = HttpClients
+                    .custom()
+                    .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
         //мне нужен пост запрос, который будет обращаться к адресу в конструкторе
-        HttpPost post = new HttpPost("http://localhost:8080/api/client/change");
+        HttpPost post = new HttpPost("https://localhost:8443/api/client/change");
         //конвертируем DTO объект, полученный из фронта, в JSON-строку для пересылки на сервер:
         String requestToJSON = new ObjectMapper().writeValueAsString(request);
         try {
