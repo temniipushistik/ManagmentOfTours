@@ -7,10 +7,18 @@ import org.apache.http.client.HttpClient;
 
 import org.apache.http.client.methods.HttpGet;
 
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 
 import ru.home.tourManagerBot.DTO.response.UniqueResponse;
+
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 public class ObtainAllService {
 
@@ -18,10 +26,24 @@ public class ObtainAllService {
 
         UniqueResponse uniqueResponse;
 
-        HttpClient client = HttpClientBuilder.create().build();
+        //HttpClient client = HttpClientBuilder.create().build();
         //гет запрос, который будет обращаться к адресу в конструкторе
+        HttpClient client=null;
+        try {
+            client = HttpClients
+                    .custom()
+                    .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
 
-        HttpGet get = new HttpGet("http://localhost:8080/api/client/obtainAll");
+        HttpGet get = new HttpGet("https://localhost:8443/api/client/obtainAll");
 
         try {
 

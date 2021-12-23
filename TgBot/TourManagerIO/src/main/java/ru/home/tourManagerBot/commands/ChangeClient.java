@@ -82,18 +82,18 @@ public class ChangeClient {
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             //flagOfChanging = 3;
             return sendMessage;
-        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())  == 3 && (update.getMessage().getText() != "Да, далее")) {
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())  == 3 && (update.getMessage().getText().equals("Да, далее"))) {
             Integer step = 4;
-            BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
+               BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             return changePhone(update);
-        } else if (flagOfChanging == 3 && (update.getMessage().getText() != "Нет, назад")) {
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName())  == 3 && (update.getMessage().getText().equals("Нет, назад"))) {
             Integer step = 2;
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
            // flagOfChanging--;
 
             HashMap tempClient = BotImplementation.managerAndClient.get(update.getMessage().getFrom().getUserName());
             //удаляем  одно значение - юзернейм
-            tempClient.remove("userName", update.getMessage().getText());
+            tempClient.remove("userName");
             //возвращаем с удаленным полем юзернейм
             BotImplementation.managerAndClient.put(update.getMessage().getFrom().getUserName(), tempClient);
             return changeName(update);
@@ -120,12 +120,12 @@ public class ChangeClient {
             Integer step = 5;
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
             return sendMessage;
-        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && (update.getMessage().getText() != "Да, далее")) {
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && (update.getMessage().getText().equals("Да, далее"))) {
             Integer step = 6;
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
          //   flagOfChanging = 6;
             return finish(update);
-        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && (update.getMessage().getText() != "Нет, назад")) {
+        } else if (BotImplementation.steps.get(update.getMessage().getFrom().getUserName()) == 5 && (update.getMessage().getText().equals("Нет, назад"))) {
             Integer step = 4;
             BotImplementation.steps.put(update.getMessage().getFrom().getUserName(), step);
           //  flagOfChanging--;
