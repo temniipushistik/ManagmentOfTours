@@ -152,34 +152,6 @@ public class ClientServiceImplementation implements ClientService {
         return response;
     }
 
-
-//    @Override
-//    public EntityTour addClient(CreateClientRequest client) {
-//
-//        return null;
-//    }
-//
-//    @Override
-//    public void delete(String email) {
-//
-//        repository.deleteByEmail(email);
-//    }
-//
-//    @Override
-//    public void deleteAll() {
-//        repository.deleteAll();
-//    }
-//
-//    @Override
-//    public EntityTour getClient(String email) {
-//        List<EntityTour> result = repository.findByEmail(email);
-//        if (result.size() != 0) {
-//
-//            return result.get(0);
-//        } else {
-//            return null;
-//        }
-//
 //    }
 }
 
